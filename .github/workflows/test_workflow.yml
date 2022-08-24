@@ -104,12 +104,15 @@ jobs:
 
           python -m pip install --upgrade pip
 
+          echo "============================================================="
+          echo "Install"
+          echo "============================================================="
           python -m pip install .
 
       - name: Install MPI
         run: |
           echo "============================================================="
-          echo "Install PETSc"
+          echo "Install MPI"
           echo "============================================================="
           if [[ "${{ matrix.OPENMPI }}" ]]; then
             COMPILERS="cython compilers openmpi-mpicc=${{ matrix.OPENMPI }}"
@@ -122,6 +125,8 @@ jobs:
           else
             MPI4PY="mpi4py"
           fi
+
+          conda install $COMPILERS $MPI4PY -q -y
 
           echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
 
@@ -145,7 +150,7 @@ jobs:
       - name: Build pyOptSparse
         run: |
           echo "============================================================="
-          echo "Install pyoptsparse"
+          echo "Build pyoptsparse"
           echo "============================================================="
 
           if [[ "${{ matrix.PYOPTSPARSE }}" == "conda-forge" ]]; then
