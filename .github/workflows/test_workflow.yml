@@ -23,7 +23,6 @@ jobs:
             PY: '3.10'
             NUMPY: 1.22
             SCIPY: 1.7
-            PETSc: 3.16
             PYOPTSPARSE: 'v2.8.3'
             PAROPT: true
             SNOPT: 7.7
@@ -34,7 +33,6 @@ jobs:
             PY: '3.10'
             NUMPY: 1.22
             SCIPY: 1.7
-            PETSc: 3.16
             PYOPTSPARSE: 'v2.8.3'
             PAROPT: true
             SNOPT: 7.7
@@ -45,7 +43,6 @@ jobs:
             PY: 3
             NUMPY: 1
             SCIPY: 1
-            PETSc: 3
             PYOPTSPARSE: 'latest'
             PAROPT: true
             SNOPT: 7.7
@@ -58,7 +55,6 @@ jobs:
             SCIPY: 1.7
             OPENMPI: '4.0'
             MPI4PY: '3.0'
-            PETSc: 3.13
             PYOPTSPARSE: 'v1.2'
             SNOPT: 7.2
 
@@ -120,7 +116,7 @@ jobs:
           echo "============================================================="
           python -m pip install .
 
-      - name: Install PETSc
+      - name: Install MPI
         if: matrix.PETSc
         run: |
           echo "============================================================="
@@ -137,20 +133,6 @@ jobs:
           else
             MPI4PY="mpi4py"
           fi
-
-          conda install $COMPILERS $MPI4PY petsc4py=${{ matrix.PETSc }} -q -y
-
-          export OMPI_MCA_rmaps_base_oversubscribe=1
-          echo "-----------------------"
-          echo "Quick test of mpi4py:"
-          mpirun -n 3 python -c "from mpi4py import MPI; print(f'Rank: {MPI.COMM_WORLD.rank}')"
-          echo "-----------------------"
-          echo "Quick test of petsc4py:"
-          mpirun -n 3 python -c "import numpy; from mpi4py import MPI; comm = MPI.COMM_WORLD; \
-                                 import petsc4py; petsc4py.init(); \
-                                 x = petsc4py.PETSc.Vec().createWithArray(numpy.ones(5)*comm.rank, comm=comm);  \
-                                 print(x.getArray())"
-          echo "-----------------------"
 
           echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
 
@@ -212,7 +194,7 @@ jobs:
               echo "SNOPT version ${{ matrix.SNOPT }} was requested but source is not available"
             fi
 
-            build_pyoptsparse $BRANCH $PAROPT $SNOPT
+            build_pyoptsparse -v $BRANCH $PAROPT $SNOPT
           fi
 
       - name: Audit dependencies
