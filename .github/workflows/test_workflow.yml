@@ -55,6 +55,7 @@ jobs:
             OPENMPI: '4.0'
             MPI4PY: '3.0'
             PYOPTSPARSE: 'v1.2'
+            LINEAR_SOLVER: -l hsl
             SNOPT: 7.2
 
     runs-on: ${{ matrix.OS }}
@@ -111,7 +112,7 @@ jobs:
       - name: Install MPI
         run: |
           echo "============================================================="
-          echo "Install MPI (for ParOPT)"
+          echo "Install MPI"
           echo "============================================================="
           if [[ "${{ matrix.OPENMPI }}" ]]; then
             COMPILERS="cython compilers openmpi-mpicc=${{ matrix.OPENMPI }}"
@@ -178,7 +179,7 @@ jobs:
             echo "SNOPT version ${{ matrix.SNOPT }} was requested but source is not available"
           fi
 
-          build_pyoptsparse -v $BRANCH $PAROPT $SNOPT
+          build_pyoptsparse -v $BRANCH $PAROPT $SNOPT ${{ matrix.LINEAR_SOLVER }}
 
           echo "BRANCH=$BRANCH" >> $GITHUB_ENV
 
