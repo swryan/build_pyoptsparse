@@ -17,45 +17,45 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # # test baseline versions on Ubuntu
-          # - NAME: Baseline Ubuntu
-          #   OS: ubuntu-latest
-          #   PY: '3.10'
-          #   NUMPY: 1.22
-          #   SCIPY: 1.7
-          #   PYOPTSPARSE: 'v2.8.3'
-          #   PAROPT: true
-          #   SNOPT: 7.7
-
-          # test baseline versions on MacOS
-          - NAME: Baseline MacOS
-            OS: macos-12
+          # test baseline versions on Ubuntu
+          - NAME: Baseline Ubuntu
+            OS: ubuntu-latest
             PY: '3.10'
             NUMPY: 1.22
             SCIPY: 1.7
             PYOPTSPARSE: 'v2.8.3'
+            PAROPT: true
             SNOPT: 7.7
 
-          # # test latest versions
-          # - NAME: Latest
-          #   OS: ubuntu-latest
-          #   PY: 3
-          #   NUMPY: 1
-          #   SCIPY: 1
-          #   PYOPTSPARSE: 'latest'
-          #   PAROPT: true
-          #   SNOPT: 7.7
-
-          # # test oldest supported versions
-          # - NAME: Oldest
-          #   OS: ubuntu-latest
-          #   PY: 3.8
+          # # test baseline versions on MacOS
+          # - NAME: Baseline MacOS
+          #   OS: macos-latest
+          #   PY: '3.10'
           #   NUMPY: 1.22
           #   SCIPY: 1.7
-          #   OPENMPI: '4.0'
-          #   MPI4PY: '3.0'
-          #   PYOPTSPARSE: 'v1.2'
-          #   SNOPT: 7.2
+          #   PYOPTSPARSE: 'v2.8.3'
+          #   SNOPT: 7.7
+
+          # test latest versions
+          - NAME: Latest
+            OS: ubuntu-latest
+            PY: 3
+            NUMPY: 1
+            SCIPY: 1
+            PYOPTSPARSE: 'latest'
+            PAROPT: true
+            SNOPT: 7.7
+
+          # test oldest supported versions
+          - NAME: Oldest
+            OS: ubuntu-latest
+            PY: 3.8
+            NUMPY: 1.22
+            SCIPY: 1.7
+            OPENMPI: '4.0'
+            MPI4PY: '3.0'
+            PYOPTSPARSE: 'v1.2'
+            SNOPT: 7.2
 
     runs-on: ${{ matrix.OS }}
 
@@ -108,29 +108,7 @@ jobs:
           echo "============================================================="
           python -m pip install .
 
-      - name: Install FORTRAN
-        run: |
-          echo "============================================================="
-          echo "Install FORTRAN"
-          echo "============================================================="
-
-          function installdmg {
-              set -x
-              tempd=$(mktemp -d)
-              curl $1 > $tempd/pkg.dmg
-              listing=$(sudo hdiutil attach $tempd/pkg.dmg | grep Volumes)
-              volume=$(echo "$listing" | cut -f 3)
-              package=$(ls -1 "$volume" | grep .pkg | head -1)
-              sudo installer -pkg "$volume"/"$package" -target /
-              sudo hdiutil detach "$(echo "$listing" | cut -f 1)"
-              rm -rf $tempd
-              set +x
-          }
-
-          installdmg https://github.com/fxcoudert/gfortran-for-macOS/releases/download/12.1-monterey/gfortran-Intel-12.1-Monterey.dmg
-
       - name: Install MPI
-        if: matrix.PAROPT
         run: |
           echo "============================================================="
           echo "Install MPI (for ParOPT)"
