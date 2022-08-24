@@ -34,7 +34,6 @@ jobs:
             NUMPY: 1.22
             SCIPY: 1.7
             PYOPTSPARSE: 'v2.8.3'
-            PAROPT: true
             SNOPT: 7.7
 
           # # test latest versions
@@ -100,7 +99,7 @@ jobs:
 
       - name: Install
         run: |
-          conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q -y
+          conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} cython -q -y
 
           python -m pip install --upgrade pip
 
@@ -110,14 +109,15 @@ jobs:
           python -m pip install .
 
       - name: Install MPI
+        if: matrix.PAROPT
         run: |
           echo "============================================================="
-          echo "Install MPI"
+          echo "Install MPI (for ParOPT)"
           echo "============================================================="
           if [[ "${{ matrix.OPENMPI }}" ]]; then
             COMPILERS="cython compilers openmpi-mpicc=${{ matrix.OPENMPI }}"
           else
-            COMPILERS="cython openmpi-mpicc"
+            COMPILERS="cython compilers openmpi-mpicc"
           fi
 
           if [[ "${{ matrix.MPI4PY }}" ]]; then
@@ -179,12 +179,7 @@ jobs:
             echo "SNOPT version ${{ matrix.SNOPT }} was requested but source is not available"
           fi
 
-          if [[ "${{ matrix.OS }}" == "macos-latest" ]]; then
-            FORCE_BUILD=""
-            conda install -c conda-forge mumps
-          fi
-
-          build_pyoptsparse -v $FORCE_BUILD $BRANCH $PAROPT $SNOPT
+          build_pyoptsparse -v $BRANCH $PAROPT $SNOPT
 
       - name: Audit dependencies
         run: |
