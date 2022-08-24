@@ -17,15 +17,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # test baseline versions on Ubuntu
-          - NAME: Baseline Ubuntu
-            OS: ubuntu-latest
-            PY: '3.10'
-            NUMPY: 1.22
-            SCIPY: 1.7
-            PYOPTSPARSE: 'v2.8.3'
-            PAROPT: true
-            SNOPT: 7.7
+          # # test baseline versions on Ubuntu
+          # - NAME: Baseline Ubuntu
+          #   OS: ubuntu-latest
+          #   PY: '3.10'
+          #   NUMPY: 1.22
+          #   SCIPY: 1.7
+          #   PYOPTSPARSE: 'v2.8.3'
+          #   PAROPT: true
+          #   SNOPT: 7.7
 
           # test baseline versions on MacOS
           - NAME: Baseline MacOS
@@ -37,26 +37,26 @@ jobs:
             PAROPT: true
             SNOPT: 7.7
 
-          # test latest versions
-          - NAME: Latest
-            OS: ubuntu-latest
-            PY: 3
-            NUMPY: 1
-            SCIPY: 1
-            PYOPTSPARSE: 'latest'
-            PAROPT: true
-            SNOPT: 7.7
+          # # test latest versions
+          # - NAME: Latest
+          #   OS: ubuntu-latest
+          #   PY: 3
+          #   NUMPY: 1
+          #   SCIPY: 1
+          #   PYOPTSPARSE: 'latest'
+          #   PAROPT: true
+          #   SNOPT: 7.7
 
-          # test oldest supported versions
-          - NAME: Oldest
-            OS: ubuntu-latest
-            PY: 3.8
-            NUMPY: 1.22
-            SCIPY: 1.7
-            OPENMPI: '4.0'
-            MPI4PY: '3.0'
-            PYOPTSPARSE: 'v1.2'
-            SNOPT: 7.2
+          # # test oldest supported versions
+          # - NAME: Oldest
+          #   OS: ubuntu-latest
+          #   PY: 3.8
+          #   NUMPY: 1.22
+          #   SCIPY: 1.7
+          #   OPENMPI: '4.0'
+          #   MPI4PY: '3.0'
+          #   PYOPTSPARSE: 'v1.2'
+          #   SNOPT: 7.2
 
     runs-on: ${{ matrix.OS }}
 
@@ -117,7 +117,7 @@ jobs:
           if [[ "${{ matrix.OPENMPI }}" ]]; then
             COMPILERS="cython compilers openmpi-mpicc=${{ matrix.OPENMPI }}"
           else
-            COMPILERS="cython compilers openmpi-mpicc"
+            COMPILERS="cython openmpi-mpicc"
           fi
 
           if [[ "${{ matrix.MPI4PY }}" ]]; then
