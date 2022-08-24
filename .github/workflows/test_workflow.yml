@@ -184,7 +184,6 @@ jobs:
           fi
 
           build_pyoptsparse -v $FORCE_BUILD $BRANCH $PAROPT $SNOPT
-        fi
 
       - name: Audit dependencies
         run: |
