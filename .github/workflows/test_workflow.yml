@@ -180,6 +180,13 @@ jobs:
 
           build_pyoptsparse -v $BRANCH $PAROPT $SNOPT
 
+      - name: Run tests
+        run: |
+          python -m pip install testflo
+          git clone https://github.com/mdolab/pyoptsparse
+          cd pyoptsparse/tests
+          testflo
+
       - name: Audit dependencies
         run: |
           python -m pip install pip-audit
