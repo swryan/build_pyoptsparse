@@ -29,7 +29,7 @@ jobs:
 
           # test baseline versions on MacOS
           - NAME: Baseline MacOS
-            OS: macos-latest
+            OS: macos-12
             PY: '3.10'
             NUMPY: 1.22
             SCIPY: 1.7
@@ -99,7 +99,7 @@ jobs:
 
       - name: Install
         run: |
-          conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} cython compilers -q -y
+          conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q -y
 
           python -m pip install --upgrade pip
 
@@ -108,6 +108,27 @@ jobs:
           echo "============================================================="
           python -m pip install .
 
+      - name: Install FORTRAN
+        run: |
+          echo "============================================================="
+          echo "Install FORTRAN"
+          echo "============================================================="
+
+          function installdmg {
+              set -x
+              tempd=$(mktemp -d)
+              curl $1 > $tempd/pkg.dmg
+              listing=$(sudo hdiutil attach $tempd/pkg.dmg | grep Volumes)
+              volume=$(echo "$listing" | cut -f 3)
+              package=$(ls -1 "$volume" | grep .pkg | head -1)
+              sudo installer -pkg "$volume"/"$package" -target /
+              sudo hdiutil detach "$(echo "$listing" | cut -f 1)"
+              rm -rf $tempd
+              set +x
+          }
+
+          installdmg https://github.com/fxcoudert/gfortran-for-macOS/releases/download/12.1-monterey/gfortran-Intel-12.1-Monterey.dmg
+
       - name: Install MPI
         if: matrix.PAROPT
         run: |
@@ -115,9 +136,9 @@ jobs:
           echo "Install MPI (for ParOPT)"
           echo "============================================================="
           if [[ "${{ matrix.OPENMPI }}" ]]; then
-            COMPILERS="openmpi-mpicc=${{ matrix.OPENMPI }}"
+            COMPILERS="cython compilers openmpi-mpicc=${{ matrix.OPENMPI }}"
           else
-            COMPILERS="openmpi-mpicc"
+            COMPILERS="cython compilers openmpi-mpicc"
           fi
 
           if [[ "${{ matrix.MPI4PY }}" ]]; then
