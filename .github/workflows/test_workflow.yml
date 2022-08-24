@@ -99,7 +99,7 @@ jobs:
 
       - name: Install
         run: |
-          conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} cython -q -y
+          conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} cython compilers -q -y
 
           python -m pip install --upgrade pip
 
@@ -115,9 +115,9 @@ jobs:
           echo "Install MPI (for ParOPT)"
           echo "============================================================="
           if [[ "${{ matrix.OPENMPI }}" ]]; then
-            COMPILERS="cython compilers openmpi-mpicc=${{ matrix.OPENMPI }}"
+            COMPILERS="openmpi-mpicc=${{ matrix.OPENMPI }}"
           else
-            COMPILERS="cython compilers openmpi-mpicc"
+            COMPILERS="openmpi-mpicc"
           fi
 
           if [[ "${{ matrix.MPI4PY }}" ]]; then
