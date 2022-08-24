@@ -180,7 +180,7 @@ jobs:
 
           build_pyoptsparse -v $BRANCH $PAROPT $SNOPT
 
-          echo "PYOPTSPARSE_VER=$BRANCH" >> $GITHUB_ENV
+          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
 
 
       - name: Run tests
@@ -190,7 +190,8 @@ jobs:
           echo "============================================================="
           echo "Run tests from pyoptsparse repository"
           echo "============================================================="
-          git clone --branch $PYOPTSPARSE_VER https://github.com/mdolab/pyoptsparse
+          git clone https://github.com/mdolab/pyoptsparse
+          git checkout -b $BRANCH
           cd pyoptsparse/test*/
           testflo --pre_announce --show_skipped .
 
