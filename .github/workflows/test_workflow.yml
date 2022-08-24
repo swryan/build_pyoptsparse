@@ -29,7 +29,7 @@ jobs:
 
           # test baseline versions on MacOS
           - NAME: Baseline MacOS
-            OS: macos-latest
+            OS: macos-12
             PY: '3.10'
             NUMPY: 1.22
             SCIPY: 1.7
@@ -180,6 +180,7 @@ jobs:
           fi
 
           if [[ "${{ matrix.OS }}" == "macos-latest" ]]; then
+            conda install gfortran -q -y
             FORCE_BUILD="-f"
           fi
 
@@ -192,15 +193,6 @@ jobs:
           echo "Scan environment for packages with known vulnerabilities"
           echo "============================================================="
           python -m pip_audit
-
-      - name: Scan for security issues
-        run: |
-          python -m pip install bandit
-          echo "============================================================="
-          echo "Run bandit scan for high/medium severity issues"
-          echo "============================================================="
-          cd $GITHUB_WORKSPACE
-          python -m bandit -c bandit.yml -ll -r build_pyoptsparse
 
       - name: Notify slack
         uses: act10ns/slack@v1
