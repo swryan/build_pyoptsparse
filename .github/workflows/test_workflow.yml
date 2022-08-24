@@ -102,22 +102,11 @@ jobs:
         run: |
           conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q -y
 
-          if [[ "${{ matrix.OPTIONAL }}" == "[all]" ]]; then
-            echo "============================================================="
-            echo "Install jupyter dependencies with conda"
-            echo "============================================================="
-            conda install jupyter jupyter-book 'lxml>=4.9.1'
-          fi
-
           python -m pip install --upgrade pip
 
-          echo "============================================================="
-          echo "Install OpenMDAO"
-          echo "============================================================="
           python -m pip install .
 
       - name: Install MPI
-        if: matrix.PETSc
         run: |
           echo "============================================================="
           echo "Install PETSc"
