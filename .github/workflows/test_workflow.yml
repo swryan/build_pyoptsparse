@@ -179,9 +179,13 @@ jobs:
             echo "SNOPT version ${{ matrix.SNOPT }} was requested but source is not available"
           fi
 
-          if [[ "${{ matrix.LINEAR_SOLVER }}" == "hsl"  && "${{ secrets.HSL_LOCATION }}" ]]; then
-            scp -q ${{ secrets.HSL_LOCATION }} hsl.tar.gz
-            LINEAR_SOLVER="-l hsl -t hsl.tar.gz"
+          if [[ "${{ matrix.LINEAR_SOLVER }}" == "hsl"  ]]; then
+            if "${{ secrets.HSL_LOCATION }}" ]]; then
+              scp -q ${{ secrets.HSL_LOCATION }} hsl.tar.gz
+              LINEAR_SOLVER="-l hsl -t hsl.tar.gz"
+            else
+              echo "HSL was requested but source is not available, using default linear solver."
+            fi
           elif [[ "${{  matrix.LINEAR_SOLVER }}" == "pardiso" ]]; then
             LINEAR_SOLVER="-l pardiso"
           fi
@@ -193,8 +197,8 @@ jobs:
 
       - name: Run tests
         run: |
-          if [[ "{{ matrix.LINEAR_SOLVER }}" == "hsl" && "${{ secrets.HSL_LOCATION }}" ]]; then
-            echo "HSL has been specified, cannot run tests without HSL source code"
+          if [[ "{{ matrix.LINEAR_SOLVER }}" == "hsl" && -z "${{ secrets.HSL_LOCATION }}" ]]; then
+            echo "HSL was requested but source is not available, skipping tests..."
           else
             python -m pip install testflo parameterized six
 
