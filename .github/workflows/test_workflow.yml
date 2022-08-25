@@ -179,7 +179,11 @@ jobs:
             echo "SNOPT version ${{ matrix.SNOPT }} was requested but source is not available"
           fi
 
-          build_pyoptsparse -v $BRANCH $PAROPT $SNOPT ${{ matrix.LINEAR_SOLVER }}
+          if [[ "${{  matrix.LINEAR_SOLVER }}" == "hsl" ]]; then
+            wget https://github.com/coin-or-tools/ThirdParty-HSL/archive/refs/tags/releases/1.5.8.tar.gz
+            LINEAR_SOLVER="-l hsl -t 1.5.8.tar.gz"
+          fi
+          build_pyoptsparse -v $BRANCH $PAROPT $SNOPT $LINEAR_SOLVER
 
           echo "BRANCH=$BRANCH" >> $GITHUB_ENV
 
