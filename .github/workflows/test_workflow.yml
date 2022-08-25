@@ -193,7 +193,7 @@ jobs:
 
       - name: Run tests
         run: |
-          if [[ "{{ matrix.LINEAR_SOLVER }}" == "hsl" && "${{ secrets.HSL_LOCATION }}"); then
+          if [[ "{{ matrix.LINEAR_SOLVER }}" == "hsl" && "${{ secrets.HSL_LOCATION }}" ]]; then
             echo "HSL has been specified, cannot run tests without HSL source code"
           else
             python -m pip install testflo parameterized six
