@@ -184,7 +184,9 @@ jobs:
               scp -q ${{ secrets.HSL_LOCATION }} hsl.tar.gz
               LINEAR_SOLVER="-l hsl -t hsl.tar.gz"
             else
+              echo "---------------------------------------------------------------------------"
               echo "HSL was requested but source is not available, using default linear solver."
+              echo "---------------------------------------------------------------------------"
             fi
           elif [[ "${{  matrix.LINEAR_SOLVER }}" == "pardiso" ]]; then
             LINEAR_SOLVER="-l pardiso"
@@ -197,7 +199,7 @@ jobs:
 
       - name: Run tests
         run: |
-          if [[ "{{ matrix.LINEAR_SOLVER }}" == "hsl" && -z "${{ secrets.HSL_LOCATION }}" ]]; then
+          if [[ "${{ matrix.LINEAR_SOLVER }}" == "hsl" && -z "${{ secrets.HSL_LOCATION }}" ]]; then
             echo "HSL was requested but source is not available, skipping tests..."
           else
             python -m pip install testflo parameterized six
