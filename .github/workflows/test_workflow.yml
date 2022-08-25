@@ -192,16 +192,19 @@ jobs:
 
 
       - name: Run tests
-        if: (matrix.LINEAR_SOLVER != 'hsl' || ${{ secrets.HSL_LOCATION }})
         run: |
-          python -m pip install testflo parameterized six
+          if [[ "{{ matrix.LINEAR_SOLVER }}" == "hsl" && "${{ secrets.HSL_LOCATION }}"); then
+            echo "HSL has been specified, cannot run tests without HSL source code"
+          else
+            python -m pip install testflo parameterized six
 
-          echo "============================================================="
-          echo "Run tests from pyoptsparse repository"
-          echo "============================================================="
-          git clone $BRANCH https://github.com/mdolab/pyoptsparse
-          cd pyoptsparse/test*/
-          testflo --pre_announce --show_skipped .
+            echo "============================================================="
+            echo "Run tests from pyoptsparse repository"
+            echo "============================================================="
+            git clone $BRANCH https://github.com/mdolab/pyoptsparse
+            cd pyoptsparse/test*/
+            testflo --pre_announce --show_skipped .
+          fi
 
       - name: Audit dependencies
         run: |
