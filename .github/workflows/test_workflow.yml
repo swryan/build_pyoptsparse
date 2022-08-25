@@ -55,7 +55,7 @@ jobs:
             OPENMPI: '4.0'
             MPI4PY: '3.0'
             PYOPTSPARSE: 'v1.2'
-            LINEAR_SOLVER: pardiso
+            LINEAR_SOLVER: hsl
             SNOPT: 7.2
 
     runs-on: ${{ matrix.OS }}
@@ -179,18 +179,20 @@ jobs:
             echo "SNOPT version ${{ matrix.SNOPT }} was requested but source is not available"
           fi
 
-          if [[ "${{  matrix.LINEAR_SOLVER }}" == "hsl" ]]; then
-            wget https://github.com/coin-or-tools/ThirdParty-HSL/archive/refs/tags/releases/1.5.8.tar.gz
-            LINEAR_SOLVER="-l hsl -t 1.5.8.tar.gz"
+          if [[ "${{ matrix.LINEAR_SOLVER }}" == "hsl"  && "${{ secrets.HSL_LOCATION }}" ]]; then
+            scp -q ${{ secrets.HSL_LOCATION }} hsl.tar.gz
+            LINEAR_SOLVER="-l hsl -t hsl.tar.gz"
           elif [[ "${{  matrix.LINEAR_SOLVER }}" == "pardiso" ]]; then
             LINEAR_SOLVER="-l pardiso"
           fi
+
           build_pyoptsparse -v $BRANCH $PAROPT $SNOPT $LINEAR_SOLVER
 
           echo "BRANCH=$BRANCH" >> $GITHUB_ENV
 
 
       - name: Run tests
+        if: (matrix.LINEAR_SOLVER != 'hsl' || secrets.HSL_LOCATION )
         run: |
           python -m pip install testflo parameterized six
 
