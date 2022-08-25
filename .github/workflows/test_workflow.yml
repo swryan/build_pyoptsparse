@@ -57,7 +57,7 @@ jobs:
             MPI4PY: '3.0'
             PYOPTSPARSE: 'v1.2'
             # LINEAR_SOLVER: hsl
-            NO_IPOPT: --no-ipopt
+            NO_IPOPT: true
             SNOPT: 7.2
 
     runs-on: ${{ matrix.OS }}
@@ -192,6 +192,10 @@ jobs:
             fi
           elif [[ "${{  matrix.LINEAR_SOLVER }}" == "pardiso" ]]; then
             LINEAR_SOLVER="-l pardiso"
+          fi
+
+          if [[ "${{ matrix.NO_IPOPT }}" ]]; then
+            NO_IPOPT="--no-ipopt"
           fi
 
           build_pyoptsparse -v $BRANCH $PAROPT $SNOPT $NO_IPOPT $LINEAR_SOLVER
