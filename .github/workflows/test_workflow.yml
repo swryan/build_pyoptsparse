@@ -192,7 +192,7 @@ jobs:
 
 
       - name: Run tests
-        if: (matrix.LINEAR_SOLVER != 'hsl' || secrets.HSL_LOCATION )
+        if: (matrix.LINEAR_SOLVER != 'hsl' || ${{ secrets.HSL_LOCATION }})
         run: |
           python -m pip install testflo parameterized six
 
