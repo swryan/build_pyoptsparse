@@ -56,7 +56,6 @@ jobs:
             OPENMPI: '4.0'
             MPI4PY: '3.0'
             PYOPTSPARSE: 'v1.2'
-            # LINEAR_SOLVER: hsl
             NO_IPOPT: true
             SNOPT: 7.2
 
@@ -191,6 +190,9 @@ jobs:
               echo "---------------------------------------------------------------------------"
             fi
           elif [[ "${{  matrix.LINEAR_SOLVER }}" == "pardiso" ]]; then
+            echo "-------------------------------------------------------------------------------"
+            echo "Pardiso requires Intel compilers, which are not installed. The build will fail."
+            echo "-------------------------------------------------------------------------------"
             LINEAR_SOLVER="-l pardiso"
           fi
 
@@ -202,27 +204,21 @@ jobs:
 
           echo "BRANCH=$BRANCH" >> $GITHUB_ENV
 
-
       - name: Run tests
         run: |
-          if [[ "${{ matrix.LINEAR_SOLVER }}" == "hsl" && -z "${{ secrets.HSL_LOCATION }}" ]]; then
-            echo "----------------------------------------------------------------"
-            echo "HSL was requested but source is not available, skipping tests..."
-            echo "----------------------------------------------------------------"
-          else
-            python -m pip install testflo parameterized six
+          python -m pip install testflo parameterized six
 
-            echo "============================================================="
-            echo "Run tests from pyoptsparse repository"
-            echo "============================================================="
-            git clone $BRANCH https://github.com/mdolab/pyoptsparse
-            cd pyoptsparse/test*/
-            testflo --pre_announce --show_skipped .
-          fi
+          echo "============================================================="
+          echo "Run tests from pyoptsparse repository"
+          echo "============================================================="
+          git clone $BRANCH https://github.com/mdolab/pyoptsparse
+          cd pyoptsparse/test*/
+          testflo --pre_announce --show_skipped .
 
       - name: Audit dependencies
         run: |
           python -m pip install pip-audit
+
           echo "============================================================="
           echo "Scan environment for packages with known vulnerabilities"
           echo "============================================================="
