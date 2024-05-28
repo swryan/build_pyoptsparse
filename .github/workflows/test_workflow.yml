@@ -195,7 +195,7 @@ jobs:
 
       - name: Install
         run: |
-          conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} cython swig -q -y
+          conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} compilers cython swig -q -y
 
           python -m pip install --upgrade pip
 
@@ -211,7 +211,7 @@ jobs:
           echo "Install MPI"
           echo "============================================================="
 
-          conda install compilers openmpi-mpicc=4 mpi4py -q -y
+          conda install openmpi-mpicc=4 mpi4py -q -y
 
           echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
 
