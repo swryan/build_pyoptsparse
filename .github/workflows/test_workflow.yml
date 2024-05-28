@@ -336,9 +336,10 @@ jobs:
       - name: Run tests
         run: |
           python -m pip install parameterized six
-          pip install git+https://github.com/swryan/testflo
-
           conda install -y -q gettext
+
+          source /Users/runner/miniconda3/envs/test/etc/conda/activate.d/pyoptsparse_lib.sh
+          pip install git+https://github.com/swryan/testflo
 
           echo "============================================================="
           echo "Run tests from pyoptsparse repository"
