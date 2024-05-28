@@ -211,7 +211,7 @@ jobs:
           echo "Install MPI"
           echo "============================================================="
 
-          conda install openmpi-mpicc=4 mpi4py -q -y
+          conda install openmpi-mpicc=3 mpi4py -q -y
 
           echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
 
