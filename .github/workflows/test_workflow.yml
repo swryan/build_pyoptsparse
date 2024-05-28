@@ -338,13 +338,12 @@ jobs:
           python -m pip install parameterized six
           conda install -y -q gettext
 
-          source /Users/runner/miniconda3/envs/test/etc/conda/activate.d/pyoptsparse_lib.sh
-          pip install git+https://github.com/swryan/testflo
-
           echo "============================================================="
           echo "Run tests from pyoptsparse repository"
           echo "============================================================="
           unset DYLD_LIBRARY_PATH
+
+          pip install git+https://github.com/swryan/testflo
 
           if [[ "$BRANCH" == "" ]]; then
             BRANCH=`python -c "from build_pyoptsparse import build_info; print(build_info['pyoptsparse']['branch'])"`
