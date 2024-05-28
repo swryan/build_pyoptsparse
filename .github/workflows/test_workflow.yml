@@ -121,7 +121,6 @@ jobs:
             PY: '3.12'
             NUMPY: '1.26'
             SCIPY: '1.13'
-            MPI4PY: true
             PYOPTSPARSE: 'default'
             SNOPT: 7.7
             FORCE_BUILD: true
@@ -132,7 +131,6 @@ jobs:
             PY: 3
             NUMPY: 1
             SCIPY: 1
-            MPI4PY: true
             PYOPTSPARSE: 'latest'
             SNOPT: 7.7
             FORCE_BUILD: true
@@ -197,7 +195,7 @@ jobs:
 
       - name: Install
         run: |
-          conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q -y
+          conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} cython swig -q -y
 
           python -m pip install --upgrade pip
 
@@ -213,7 +211,7 @@ jobs:
           echo "Install MPI"
           echo "============================================================="
 
-          conda install cython swig compilers openmpi-mpicc mpi4py -q -y
+          conda install compilers openmpi-mpicc=4 mpi4py -q -y
 
           echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
 
