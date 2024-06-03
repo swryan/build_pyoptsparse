@@ -141,7 +141,7 @@ jobs:
             PY: '3.12'
             NUMPY: '1.26'
             SCIPY: '1.13'
-            MPI4PY: true
+            MPICC: 4
             PYOPTSPARSE: 'default'
             PAROPT: true
             SNOPT: 7.7
