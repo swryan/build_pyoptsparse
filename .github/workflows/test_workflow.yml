@@ -136,15 +136,15 @@ jobs:
             FORCE_BUILD: true
 
           # test baseline versions on MacOS latest (ARM64)
-          # - NAME: MacOS Baseline on ARM
-          #   OS: macos-latest
-          #   PY: '3.12'
-          #   NUMPY: '1.26'
-          #   SCIPY: '1.13'
-          #   MPI4PY: true
-          #   PYOPTSPARSE: 'default'
-          #   PAROPT: true
-          #   SNOPT: 7.7
+          - NAME: MacOS Baseline on ARM
+            OS: macos-latest
+            PY: '3.12'
+            NUMPY: '1.26'
+            SCIPY: '1.13'
+            MPI4PY: true
+            PYOPTSPARSE: 'default'
+            PAROPT: true
+            SNOPT: 7.7
 
     runs-on: ${{ matrix.OS }}
 
