@@ -193,31 +193,39 @@ jobs:
           channels: conda-forge
           channel-priority: true
 
-      - name: Install dependencies via conda
+      - name: Install
         if: matrix.OS != 'macos-latest'
         run: |
           conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} compilers cython swig -q -y
-          if [[ "${{ matrix.MPICC }}" ]]; then
-            conda install openmpi-mpicc=${{ matrix.MPICC }} mpi4py -q -y
-            echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
-          fi
 
-      - name: Install dependencies via conda/brew
-        if: matrix.OS == 'macos-latest'
-        run: |
-          conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q -y
-          brew install cython swig gcc cmake meson
-          if [[ "${{ matrix.MPICC }}" ]]; then
-            brew install open-mpi mpi4py
-            echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
-          fi
-
-      - name: Install
-        run: |
           echo "============================================================="
           echo "Install build_pyoptsparse"
           echo "============================================================="
           python -m pip install .
+
+          if [[ "${{ matrix.MPICC }}" ]]; then
+              echo "============================================================="
+              echo "Install MPI"
+              echo "============================================================="
+              conda install openmpi-mpicc=${{ matrix.MPICC }} mpi4py -q -y
+              echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
+          fi
+
+      - name: Install (MacOS ARM)
+        if: matrix.OS == 'macos-latest'
+        run: |
+          conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q -y
+          brew install swig gcc meson
+
+          echo "============================================================="
+          echo "Install build_pyoptsparse"
+          echo "============================================================="
+          python -m pip install .
+
+          if [[ "${{ matrix.MPICC }}" ]]; then
+            brew install open-mpi mpi4py
+            echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
+          fi
 
       - name: Display environment before
         run: |
