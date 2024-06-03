@@ -289,7 +289,7 @@ jobs:
           fi
 
           echo "build_pyoptsparse -v $BRANCH $FORCE_BUILD $PAROPT $SNOPT $NO_IPOPT $LINEAR_SOLVER"
-          build_pyoptsparse -v $BRANCH $FORCE_BUILD $PAROPT $SNOPT $NO_IPOPT $LINEAR_SOLVER
+          build_pyoptsparse -v $BRANCH $FORCE_BUILD $PAROPT $SNOPT $NO_IPOPT $LINEAR_SOLVER -d
 
           echo "BRANCH=${BRANCH}" >> $GITHUB_ENV
 
@@ -302,12 +302,20 @@ jobs:
             echo "============================================================="
             cat $f
           done
-          for f in $(find . -name 'compile.log'); do
-            echo "============================================================="
-            echo $f
-            echo "============================================================="
-            cat $f
-          done
+          if test -d /private/var/folders; then
+            for f in $(find /private/var/folders -name 'meson-log.txt'); do
+              echo "============================================================="
+              echo $f
+              echo "============================================================="
+              cat $f
+            done
+            for f in $(find /private/var/folders -name 'compile.log'); do
+              echo "============================================================="
+              echo $f
+              echo "============================================================="
+              cat $f
+            done
+          fi
 
       # Enable tmate debugging of manually-triggered workflows if the input option was provided
       #
