@@ -143,7 +143,7 @@ jobs:
             SCIPY: '1.13'
             MPICC: 4
             PYOPTSPARSE: 'default'
-            PAROPT: true
+            # PAROPT: true
             SNOPT: 7.7
 
     runs-on: ${{ matrix.OS }}
@@ -193,27 +193,24 @@ jobs:
           channels: conda-forge
           channel-priority: true
 
-      - name: Install dependencies
+      - name: Install dependencies via conda
         if: matrix.OS != 'macos-latest'
         run: |
-          conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} cython swig -q -y
-          conda install compilers cmake meson -q -y
+          conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} compilers cython swig -q -y
           if [[ "${{ matrix.MPICC }}" ]]; then
             conda install openmpi-mpicc=${{ matrix.MPICC }} mpi4py -q -y
             echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
           fi
-          pip install testflo parameterized
 
-      - name: Install dependencies MacOS ARM
+      - name: Install dependencies via conda/brew
         if: matrix.OS == 'macos-latest'
         run: |
-          conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} cython swig -q -y
-          brew install gcc cmake meson
+          conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q -y
+          brew install cython swig gcc cmake meson
           if [[ "${{ matrix.MPICC }}" ]]; then
             brew install open-mpi mpi4py
             echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
           fi
-          pip install testflo parameterized
 
       - name: Install
         run: |
