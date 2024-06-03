@@ -202,7 +202,7 @@ jobs:
           pip install testflo parameterized
 
       - name: Install dependencies MacOS 14
-        if: matrix.OS == 'macos-14'
+        if: matrix.OS == 'macos-latest'
         run: |
           conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q -y
           brew install cython swig gcc cmake meson open-mpi mpi4py
