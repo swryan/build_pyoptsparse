@@ -303,13 +303,13 @@ jobs:
             cat $f
           done
           if test -d /private/var/folders; then
-            for f in $(find /private/var/folders -name 'meson-log.txt'); do
+            for f in $(find /private/var/folders/ -name 'meson-log.txt'); do
               echo "============================================================="
               echo $f
               echo "============================================================="
               cat $f
             done
-            for f in $(find /private/var/folders -name 'compile.log'); do
+            for f in $(find /private/var/folders/ -name 'compile.log'); do
               echo "============================================================="
               echo $f
               echo "============================================================="
