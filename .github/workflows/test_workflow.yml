@@ -80,7 +80,7 @@ jobs:
             NUMPY: '1.26'
             SCIPY: '1.13'
             MPICC: 4
-            PYOPTSPARSE: 'default'
+            PYOPTSPARSE: 'v2.11.1''
             PAROPT: true
             SNOPT: 7.7
 
