@@ -198,7 +198,7 @@ jobs:
           conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q -y
 
           if [[ "${{ matrix.BREW }}" ]]; then
-            brew install swig gcc meson
+            brew install swig gcc gfortran meson
           else
             conda install compilers cython swig -q -y
           fi
