@@ -201,13 +201,8 @@ jobs:
             set +e
             export PATH="/opt/homebrew/bin:$PATH"
             brew install swig meson
-            echo "gfortran:"
-            echo `which gfortran`
-            if [[ -z `which gfortran`]]; then
-                ln -s /opt/homebrew/bin/gcc /opt/homebrew/bin/gfortran
-            fi
-            echo "gfortran:"
-            echo `which gfortran`
+            ln -s /opt/homebrew/bin/gcc-14 /opt/homebrew/bin/gcc
+            ln -s /opt/homebrew/bin/gfortran-14 /opt/homebrew/bin/gfortran
           else
             conda install compilers cython swig -q -y
           fi
