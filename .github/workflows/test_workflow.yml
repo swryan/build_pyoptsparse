@@ -198,12 +198,15 @@ jobs:
           conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q -y
 
           if [[ "${{ matrix.BREW }}" ]]; then
-            brew install --verbose meson swig
-            echo "gfortran:"
-            which gfortran
             export PATH="/opt/homebrew/bin:$PATH"
+            brew install swig meson
             echo "gfortran:"
-            which gfortran
+            echo `which gfortran`
+            if [[ -z `which gfortran`]]; then
+                ln -s /opt/homebrew/bin/gcc /opt/homebrew/bin/gfortran
+            fi
+            echo "gfortran:"
+            echo `which gfortran`
           else
             conda install compilers cython swig -q -y
           fi
