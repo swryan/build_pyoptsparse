@@ -198,9 +198,10 @@ jobs:
           conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q -y
 
           if [[ "${{ matrix.BREW }}" ]]; then
-            brew reinstall --verbose --debug  gfortran meson swig
-            brew list
-            brew doctor
+            brew install --verbose meson swig
+            echo "gfortran:"
+            which gfortran
+            export PATH="/opt/homebrew/bin:$PATH"
             echo "gfortran:"
             which gfortran
           else
@@ -229,6 +230,8 @@ jobs:
 
       - name: Display environment before
         run: |
+          echo "PATH:"
+          echo "$PATH"
           conda info
           conda list
 
