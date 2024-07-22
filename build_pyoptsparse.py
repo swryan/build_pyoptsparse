@@ -1115,6 +1115,7 @@ def find_required_command(cmd:str, errors:list):
         Accumulated pre-check error messages.
     """
     cmd_path = which(cmd)
+    note(f"checking {cmd=} {cmd_path=}")
     if cmd_path is None:
         errors.append(f"{red('ERROR')}: Required command {yellow(cmd)} not found.")
         return False
