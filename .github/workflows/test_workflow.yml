@@ -198,6 +198,7 @@ jobs:
           conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q -y
 
           if [[ "${{ matrix.BREW }}" ]]; then
+            set +e
             export PATH="/opt/homebrew/bin:$PATH"
             brew install swig meson
             echo "gfortran:"
