@@ -117,7 +117,7 @@ jobs:
 
           # test baseline versions on MacOS without MPI with forced build
           - NAME: MacOS Baseline, no MPI, forced build
-            OS: macos-12
+            OS: macos-13
             PY: '3.11'
             NUMPY: '1.26'
             SCIPY: '1.13'
@@ -198,8 +198,8 @@ jobs:
           conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q -y
 
           if [[ "${{ matrix.BREW }}" ]]; then
-            set +e
             export PATH="/opt/homebrew/bin:$PATH"
+            echo "PATH="/opt/homebrew/bin:$PATH"" >> $GITHUB_ENV
             brew install swig meson
             ln -s /opt/homebrew/bin/gcc-14 /opt/homebrew/bin/gcc
             ln -s /opt/homebrew/bin/gfortran-14 /opt/homebrew/bin/gfortran
