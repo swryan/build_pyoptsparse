@@ -198,8 +198,6 @@ jobs:
           conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q -y
 
           if [[ "${{ matrix.BREW }}" ]]; then
-            export PATH="/opt/homebrew/bin:$PATH"
-            echo "PATH="/opt/homebrew/bin:$PATH"" >> $GITHUB_ENV
             brew install swig meson
             if [[ "${{ matrix.OS }}" == "macos-latest" ]]; then
               ln -s /opt/homebrew/bin/gfortran-13 /opt/homebrew/bin/gfortran
@@ -230,8 +228,6 @@ jobs:
 
       - name: Display environment before
         run: |
-          echo "PATH:"
-          echo "$PATH"
           conda info
           conda list
 
