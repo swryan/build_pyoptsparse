@@ -201,8 +201,9 @@ jobs:
             export PATH="/opt/homebrew/bin:$PATH"
             echo "PATH="/opt/homebrew/bin:$PATH"" >> $GITHUB_ENV
             brew install swig meson
-            ln -s /opt/homebrew/bin/gcc-14 /opt/homebrew/bin/gcc
-            ln -s /opt/homebrew/bin/gfortran-14 /opt/homebrew/bin/gfortran
+            if [[ "${{ matrix.OS }}" == "macos-latest" ]]; then
+              ln -s /opt/homebrew/bin/gfortran-13 /opt/homebrew/bin/gfortran
+            fi
           else
             conda install compilers cython swig -q -y
           fi
