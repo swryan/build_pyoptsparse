@@ -124,6 +124,7 @@ jobs:
             PYOPTSPARSE: 'default'
             SNOPT: 7.7
             FORCE_BUILD: true
+            XCODE: 'Xcode_14.2'
 
           # test latest versions without MPI with forced build
           - NAME: Ubuntu Latest, no MPI, forced build
@@ -198,14 +199,16 @@ jobs:
           conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q -y
 
           if [[ "${{ matrix.BREW }}" ]]; then
-            export PATH="/opt/homebrew/bin:$PATH"
-            echo "PATH="/opt/homebrew/bin:$PATH"" >> $GITHUB_ENV
             brew install swig meson
             if [[ "${{ matrix.OS }}" == "macos-latest" ]]; then
               ln -s /opt/homebrew/bin/gfortran-13 /opt/homebrew/bin/gfortran
             fi
           else
             conda install compilers cython swig -q -y
+          fi
+
+          if [[ "{{ matrix.XCODE }}" ]]; then
+            sudo xcode-select -s "/Applications/{{ matrix.XCODE }}.app"
           fi
 
           echo "============================================================="
