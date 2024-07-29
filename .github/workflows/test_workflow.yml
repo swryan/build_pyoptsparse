@@ -124,7 +124,7 @@ jobs:
             PYOPTSPARSE: 'default'
             SNOPT: 7.7
             FORCE_BUILD: true
-            XCODE: 'Xcode_14.2'
+            XCODE: '14.2'
 
           # test latest versions without MPI with forced build
           - NAME: Ubuntu Latest, no MPI, forced build
@@ -207,8 +207,8 @@ jobs:
             conda install compilers cython swig -q -y
           fi
 
-          if [[ "{{ matrix.XCODE }}" ]]; then
-            sudo xcode-select -s "/Applications/{{ matrix.XCODE }}.app"
+          if [[ "${{ matrix.XCODE }}" ]]; then
+            sudo xcode-select -s "/Applications/Xcode_${{ matrix.XCODE }}.app"
           fi
 
           echo "============================================================="
