@@ -410,8 +410,8 @@ jobs:
             BRANCH="-b $BRANCH"
           fi
 
-          echo "git clone $BRANCH https://github.com/mdolab/pyoptsparse"
-          git clone $BRANCH https://github.com/mdolab/pyoptsparse
+          echo "git clone $BRANCH https://github.com/swryan/pyoptsparse"
+          git clone $BRANCH https://github.com/swryan/pyoptsparse
 
           cd pyoptsparse/test*/
           testflo --pre_announce --timeout=120 --show_skipped .
