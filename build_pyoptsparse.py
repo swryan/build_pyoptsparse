@@ -934,8 +934,8 @@ def install_pyoptsparse_from_src():
         os.environ['IPOPT_LIB'] = str(Path(opts["prefix"]) / 'lib')
         os.environ['IPOPT_DIR'] = str(Path(opts["prefix"]))
         if opts['pyoptsparse_version'] >= parse('2.14'):
-            os.environ['PKG_CONFIG_PATH'] = os.environ['PKG_CONFIG_PATH'] + ':' + \
-                                            os.environ['IPOPT_DIR'] + '/lib/pkgconfig'
+            pkg_path = os.environ['PKG_CONFIG_PATH'] + ':' if 'PKG_CONFIG_PATH' in os.environ else ''
+            os.environ['PKG_CONFIG_PATH'] = _ + os.environ['IPOPT_DIR'] + '/lib/pkgconfig'
     os.environ['CFLAGS'] = '-Wno-implicit-function-declaration -std=c99'
 
     # Pull in SNOPT source:
