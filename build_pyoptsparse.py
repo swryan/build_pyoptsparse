@@ -81,8 +81,8 @@ build_info = {
         'include_file': 'IpoptConfig.h'
     },
     'pyoptsparse': {
-        'branch': 'v2.10.1' if parse(numpy.__version__) < parse('2.0') else 'v2.13.1',
-        'url': 'https://github.com/mdolab/pyoptsparse.git',
+        'branch': 'v2.14.0',
+        'url': 'https://github.com/swryan/pyoptsparse.git',
     },
     'hsl': {
         'branch': 'releases/2.2.1',
