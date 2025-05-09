@@ -253,7 +253,7 @@ jobs:
         env:
           PKGMAN: ${{ matrix.PKGMAN }}
         run: |
-          $PKGMAN install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q
+          $PKGMAN install numpy==${{ matrix.NUMPY }} scipy==${{ matrix.SCIPY }} -q
 
           if [[ "${{ matrix.BREW }}" ]]; then
             brew install swig meson
@@ -290,7 +290,7 @@ jobs:
           if [[ "${{ matrix.BREW }}" ]]; then
             brew install open-mpi mpi4py
           else
-            $PKGMAN install mpich-mpicc=${{ matrix.MPICC }} mpi4py -q
+            $PKGMAN install mpich-mpicc==${{ matrix.MPICC }} mpi4py -q
           fi
 
           echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
