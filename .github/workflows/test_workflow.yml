@@ -248,8 +248,10 @@ jobs:
           python-version: ${{ matrix.PY }}
 
       - name: Install
+        env:
+          PKGMAN: ${{ matrix.PKGMAN }}
         run: |
-          conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q -y
+          $PKGMAN install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q
 
           if [[ "${{ matrix.BREW }}" ]]; then
             brew install swig meson
@@ -257,7 +259,7 @@ jobs:
               ln -s /opt/homebrew/bin/gfortran-13 /opt/homebrew/bin/gfortran
             fi
           else
-            conda install compilers cython swig -q -y
+            $PKGMAN install compilers cython swig -q
           fi
 
           if [[ "${{ matrix.XCODE }}" ]]; then
@@ -267,7 +269,12 @@ jobs:
           echo "============================================================="
           echo "Install build_pyoptsparse"
           echo "============================================================="
-          python -m pip install .
+
+          if ${{ matrix.PKGMAN == 'uv pip' }}; then
+            $PKGMAN install .
+          else
+            python -m pip install .
+          fi
 
       - name: Install MPI
         if: matrix.MPICC
@@ -281,7 +288,7 @@ jobs:
           if [[ "${{ matrix.BREW }}" ]]; then
             brew install open-mpi mpi4py
           else
-            $PKGMAN install mpich-mpicc=${{ matrix.MPICC }} mpi4py -q -y
+            $PKGMAN install mpich-mpicc=${{ matrix.MPICC }} mpi4py -q
           fi
 
           echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
