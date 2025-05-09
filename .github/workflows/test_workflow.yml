@@ -260,8 +260,10 @@ jobs:
             if [[ "${{ matrix.OS }}" == "macos-latest" ]]; then
               ln -s /opt/homebrew/bin/gfortran-13 /opt/homebrew/bin/gfortran
             fi
+          elif [[ "${{ matrix.PKGMAN }}" == "conda" ]]; then
+            $PKGMAN install compilers cython swig -q
           else
-            $PKGMAN install compilers cython swig liblapack -q
+            $PKGMAN install cython swig -q
           fi
 
           if [[ "${{ matrix.XCODE }}" ]]; then
@@ -442,6 +444,7 @@ jobs:
                     f'Scipy version {scipy.__version__} is not the requested version (${{ matrix.SCIPY }})'"
 
       - name: Run tests
+        if: ! failure()
         run: |
           if ${{ matrix.PKGMAN == 'uv pip' }}; then
             uv pip install testflo parameterized six
