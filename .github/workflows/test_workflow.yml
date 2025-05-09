@@ -57,6 +57,7 @@ jobs:
           # test default version on Ubuntu
           - NAME: Ubuntu Default
             OS: ubuntu-latest
+            PKGMAN: conda
             PY: '3.12'
             NUMPY: '1.26'
             SCIPY: '1.13'
@@ -68,6 +69,7 @@ jobs:
           # test default version on Ubuntu without MPI
           - NAME: Ubuntu Default, no MPI
             OS: ubuntu-latest
+            PKGMAN: conda
             PY: '3.12'
             NUMPY: '1.26'
             SCIPY: '1.13'
@@ -77,6 +79,7 @@ jobs:
           # test default version on Ubuntu with NumPy 2.x
           - NAME: Ubuntu Default, Numpy 2.x
             OS: ubuntu-latest
+            PKGMAN: conda
             PY: '3.13'
             NUMPY: '2'
             SCIPY: '1.15'
@@ -88,6 +91,7 @@ jobs:
           # test default version on MacOS
           - NAME: MacOS Default
             OS: macos-13
+            PKGMAN: conda
             PY: '3.11'
             NUMPY: '1.26'
             SCIPY: '1.13'
@@ -99,6 +103,7 @@ jobs:
           # test default version on MacOS with NumPy 2.x
           - NAME: MacOS Default, Numpy 2.x
             OS: macos-13
+            PKGMAN: conda
             PY: '3.13'
             NUMPY: '2'
             SCIPY: '1.15'
@@ -110,6 +115,7 @@ jobs:
           # test default version on MacOS latest (ARM64)
           - NAME: MacOS Default on ARM
             OS: macos-latest
+            PKGMAN: conda
             PY: '3.12'
             NUMPY: '1.26'
             SCIPY: '1.13'
@@ -121,6 +127,7 @@ jobs:
           # test latest release versions
           - NAME: Ubuntu Latest
             OS: ubuntu-latest
+            PKGMAN: conda
             PY: 3
             NUMPY: 2
             SCIPY: 1
@@ -132,6 +139,7 @@ jobs:
           # test oldest supported versions
           - NAME: Ubuntu Oldest
             OS: ubuntu-latest
+            PKGMAN: conda
             PY: 3.8
             NUMPY: 1.22
             SCIPY: 1.7
@@ -142,6 +150,7 @@ jobs:
           # test default version on Ubuntu without MPI with forced build
           - NAME: Ubuntu Default, no MPI, forced build
             OS: ubuntu-latest
+            PKGMAN: conda
             PY: '3.12'
             NUMPY: '1.26'
             SCIPY: '1.13'
@@ -152,6 +161,7 @@ jobs:
           # test default version on MacOS without MPI with forced build
           - NAME: MacOS Default, no MPI, forced build
             OS: macos-13
+            PKGMAN: conda
             PY: '3.11'
             NUMPY: '1.26'
             SCIPY: '1.13'
@@ -163,12 +173,25 @@ jobs:
           # test latest version without MPI with forced build
           - NAME: Ubuntu Latest, no MPI, forced build
             OS: ubuntu-latest
+            PKGMAN: conda
             PY: 3
             NUMPY: 2
             SCIPY: 1
             PYOPTSPARSE: 'latest'
             SNOPT: 7.7
             FORCE_BUILD: true
+
+          # test default version on Ubuntu with uv package manager
+          - NAME: Ubuntu Default with uv
+            OS: ubuntu-latest
+            PKGMAN: 'uv pip'
+            PY: '3.12'
+            NUMPY: '1.26'
+            SCIPY: '1.13'
+            MPICC: 4
+            PYOPTSPARSE: 'default'
+            # PAROPT: true
+            SNOPT: 7.7
 
     runs-on: ${{ matrix.OS }}
 
@@ -210,12 +233,19 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup conda
+        if: matrix.PKGMAN == 'conda'
         uses: conda-incubator/setup-miniconda@v3
         with:
           miniconda-version: latest
           python-version: ${{ matrix.PY }}
           channels: conda-forge
           channel-priority: true
+
+      - name: Setup UV
+        if: matrix.PKGMAN == 'uv pip'
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.PY }}
 
       - name: Install
         run: |
@@ -241,6 +271,8 @@ jobs:
 
       - name: Install MPI
         if: matrix.MPICC
+        env:
+          PKGMAN: ${{ matrix.PKGMAN }}
         run: |
           echo "============================================================="
           echo "Install MPI"
@@ -249,15 +281,17 @@ jobs:
           if [[ "${{ matrix.BREW }}" ]]; then
             brew install open-mpi mpi4py
           else
-            conda install mpich-mpicc=${{ matrix.MPICC }} mpi4py -q -y
+            $PKGMAN install mpich-mpicc=${{ matrix.MPICC }} mpi4py -q -y
           fi
 
           echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
 
       - name: Display environment before
         run: |
-          conda info
-          conda list
+          if ${{ matrix.PKGMAN == 'conda' }}; then
+            conda info
+            conda list
+          fi
 
           echo "============================================================="
           echo "Check installed versions of Python, Numpy and Scipy"
@@ -381,8 +415,10 @@ jobs:
 
       - name: Display environment after
         run: |
-          conda info
-          conda list
+          if ${{ matrix.PKGMAN == 'conda' }}; then
+            conda info
+            conda list
+          fi
 
           echo "============================================================="
           echo "Check installed versions of Python, Numpy and Scipy"
@@ -398,7 +434,11 @@ jobs:
 
       - name: Run tests
         run: |
-          python -m pip install testflo parameterized six
+          if ${{ matrix.PKGMAN == 'uv pip' }}; then
+            uv pip install testflo parameterized six
+          else
+            python -m pip install testflo parameterized six
+          fi
 
           echo "============================================================="
           echo "Run tests from pyoptsparse repository"
