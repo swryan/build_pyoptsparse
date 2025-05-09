@@ -51,7 +51,7 @@ jobs:
     timeout-minutes: 30
 
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         include:
           # test default version on Ubuntu
@@ -312,8 +312,8 @@ jobs:
             FORCE_BUILD="--force-build"
           fi
 
-          echo "build_pyoptsparse -v $BRANCH $FORCE_BUILD $PAROPT $SNOPT $NO_IPOPT $LINEAR_SOLVER"
-          build_pyoptsparse -v $BRANCH $FORCE_BUILD $PAROPT $SNOPT $NO_IPOPT $LINEAR_SOLVER -d
+          echo "build_pyoptsparse --pip-cmd=='uv pip' $BRANCH $FORCE_BUILD $PAROPT $SNOPT $NO_IPOPT $LINEAR_SOLVER"
+          build_pyoptsparse --pip-cmd=='uv pip' -v $BRANCH $FORCE_BUILD $PAROPT $SNOPT $NO_IPOPT $LINEAR_SOLVER -d
 
           echo "BRANCH=${BRANCH}" >> $GITHUB_ENV
 
