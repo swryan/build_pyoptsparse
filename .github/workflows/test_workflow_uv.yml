@@ -360,7 +360,6 @@ jobs:
           limit-access-to-actor: true
 
       - name: Run tests
-        if: ! failure()
         run: |
           uv pip install testflo parameterized six ansicolors
 
