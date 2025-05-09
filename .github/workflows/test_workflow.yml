@@ -247,6 +247,7 @@ jobs:
         uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.PY }}
+          activate-environment: true
 
       - name: Install
         env:
