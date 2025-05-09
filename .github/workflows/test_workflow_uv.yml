@@ -403,7 +403,7 @@ jobs:
       - name: Run tests
         if: ! failure()
         run: |
-          uv pip install testflo parameterized six
+          uv pip install testflo parameterized six ansicolors
 
           echo "============================================================="
           echo "Run tests from pyoptsparse repository"
