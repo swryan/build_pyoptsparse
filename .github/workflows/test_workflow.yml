@@ -34,6 +34,7 @@ on:
           - 'Ubuntu Default, no MPI, forced build'
           - 'MacOS Default, no MPI, forced build'
           - 'Ubuntu Latest, no MPI, forced build'
+          - 'Ubuntu Default with uv'
         required: false
         default: ''
       debug_enabled:
