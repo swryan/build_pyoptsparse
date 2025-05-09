@@ -261,7 +261,7 @@ jobs:
               ln -s /opt/homebrew/bin/gfortran-13 /opt/homebrew/bin/gfortran
             fi
           else
-            $PKGMAN install compilers cython swig -q
+            $PKGMAN install compilers cython swig liblapack -q
           fi
 
           if [[ "${{ matrix.XCODE }}" ]]; then
