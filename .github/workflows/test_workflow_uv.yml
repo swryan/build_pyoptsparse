@@ -1,4 +1,4 @@
-name: Tests
+name: Tests using uv
 
 on:
   # Trigger on push or pull request events for the master branch
