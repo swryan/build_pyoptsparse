@@ -209,14 +209,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup conda
-        uses: conda-incubator/setup-miniconda@v3
-        with:
-          miniconda-version: latest
-          python-version: ${{ matrix.PY }}
-          channels: conda-forge
-          channel-priority: true
-
       - name: Setup UV
         uses: astral-sh/setup-uv@v6
         with:
@@ -253,16 +245,13 @@ jobs:
           if [[ "${{ matrix.BREW }}" ]]; then
             brew install open-mpi mpi4py
           else
-            conda install mpich-mpicc=${{ matrix.MPICC }} mpi4py -q -y
+            uv pip install openmpi mpi4py
           fi
 
           echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
 
       - name: Display environment before
         run: |
-          conda info
-          conda list
-
           echo "============================================================="
           echo "Check installed versions of Python, Numpy and Scipy"
           echo "============================================================="
@@ -368,9 +357,6 @@ jobs:
       #    1. Click on the web-browser link printed out in this action from the github
       #       workflow terminal
       #    2. Press cntrl + c in the new tab that opens up to reveal the terminal
-      #    3. To activate the conda environment run:
-      #        $ source $CONDA/etc/profile.d/conda.sh
-      #        $ conda activate test
       - name: Setup tmate session
         if: github.event_name == 'workflow_dispatch' && inputs.debug_enabled && inputs.job_name == matrix.NAME
         uses: mxschmitt/action-tmate@v3
@@ -385,9 +371,6 @@ jobs:
 
       - name: Display environment after
         run: |
-          conda info
-          conda list
-
           echo "============================================================="
           echo "Check installed versions of Python, Numpy and Scipy"
           echo "============================================================="
