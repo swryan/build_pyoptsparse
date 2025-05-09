@@ -242,6 +242,8 @@ jobs:
           echo "Install MPI"
           echo "============================================================="
 
+          sudo apt install libopenmpi-dev
+
           if [[ "${{ matrix.BREW }}" ]]; then
             brew install open-mpi mpi4py
           else
@@ -255,6 +257,8 @@ jobs:
           echo "============================================================="
           echo "Build pyoptsparse"
           echo "============================================================="
+
+          sudo apt install libblas-dev liblapack-dev
 
           if [[ "${{ matrix.PYOPTSPARSE }}" == "default" ]]; then
             BRANCH=""
