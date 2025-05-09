@@ -312,8 +312,8 @@ jobs:
             FORCE_BUILD="--force-build"
           fi
 
-          echo "build_pyoptsparse --pip-cmd=='uv pip' $BRANCH $FORCE_BUILD $PAROPT $SNOPT $NO_IPOPT $LINEAR_SOLVER"
-          build_pyoptsparse --pip-cmd=='uv pip' -v $BRANCH $FORCE_BUILD $PAROPT $SNOPT $NO_IPOPT $LINEAR_SOLVER -d
+          echo "build_pyoptsparse --pip-cmd='uv pip' $BRANCH $FORCE_BUILD $PAROPT $SNOPT $NO_IPOPT $LINEAR_SOLVER"
+          build_pyoptsparse --pip-cmd='uv pip' -v $BRANCH $FORCE_BUILD $PAROPT $SNOPT $NO_IPOPT $LINEAR_SOLVER -d
 
           echo "BRANCH=${BRANCH}" >> $GITHUB_ENV
 
