@@ -228,7 +228,7 @@ jobs:
             sudo xcode-select -s "/Applications/Xcode_${{ matrix.XCODE }}.app"
           fi
 
-          uv pip install numpy scipy
+          uv pip install numpy scipy pkg_resources
 
           echo "============================================================="
           echo "Install build_pyoptsparse"
