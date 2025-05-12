@@ -60,7 +60,7 @@ jobs:
             PY: '3.12'
             NUMPY: '1.26'
             SCIPY: '1.13'
-            MPICC: 4
+            MPI: true
             PYOPTSPARSE: 'default'
             # PAROPT: true
             SNOPT: 7.7
@@ -80,7 +80,7 @@ jobs:
             PY: '3.13'
             NUMPY: '2'
             SCIPY: '1.15'
-            MPICC: 4
+            MPI: true
             PYOPTSPARSE: 'default'
             # PAROPT: true
             SNOPT: 7.7
@@ -91,7 +91,7 @@ jobs:
             PY: '3.11'
             NUMPY: '1.26'
             SCIPY: '1.13'
-            MPICC: 4
+            MPI: true
             PYOPTSPARSE: 'default'
             # PAROPT: true
             SNOPT: 7.7
@@ -102,7 +102,7 @@ jobs:
             PY: '3.13'
             NUMPY: '2'
             SCIPY: '1.15'
-            MPICC: 4
+            MPI: true
             PYOPTSPARSE: 'default'
             # PAROPT: true
             SNOPT: 7.7
@@ -114,7 +114,7 @@ jobs:
             NUMPY: '1.26'
             SCIPY: '1.13'
             BREW: true
-            MPICC: 4
+            MPI: true
             PYOPTSPARSE: 'default'
             SNOPT: 7.7
 
@@ -124,7 +124,7 @@ jobs:
             PY: 3
             NUMPY: 2
             SCIPY: 1
-            MPICC: 4
+            MPI: true
             PYOPTSPARSE: 'latest'
             # PAROPT: true
             SNOPT: 7.7
@@ -236,7 +236,7 @@ jobs:
           uv pip install .
 
       - name: Install MPI
-        if: matrix.MPICC
+        if: matrix.MPI
         run: |
           echo "============================================================="
           echo "Install MPI"
@@ -247,7 +247,7 @@ jobs:
           if [[ "${{ matrix.BREW }}" ]]; then
             brew install open-mpi mpi4py
           else
-            uv pip install openmpi mpi4py
+            sudo apt install openmpi-dev mpi4py
           fi
 
           echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
