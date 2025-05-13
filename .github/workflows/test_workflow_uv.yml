@@ -217,17 +217,6 @@ jobs:
 
       - name: Install
         run: |
-          if [[ "${{ matrix.BREW }}" ]]; then
-            brew install swig meson
-            if [[ "${{ matrix.OS }}" == "macos-latest" ]]; then
-              ln -s /opt/homebrew/bin/gfortran-13 /opt/homebrew/bin/gfortran
-            fi
-          fi
-
-          if [[ "${{ matrix.XCODE }}" ]]; then
-            sudo xcode-select -s "/Applications/Xcode_${{ matrix.XCODE }}.app"
-          fi
-
           uv pip install numpy scipy pkg_resources
 
           echo "============================================================="
@@ -235,30 +224,45 @@ jobs:
           echo "============================================================="
           uv pip install .
 
-      - name: Install MPI
-        if: matrix.MPI
+      - name: Install Ubuntu specific dependencies
+        if: matrix.OS == 'ubuntu-latest'
         run: |
-          echo "============================================================="
-          echo "Install MPI"
-          echo "============================================================="
-
-          sudo apt install libopenmpi-dev
-
+          sudo apt install libblas-dev liblapack-dev
           if [[ "${{ matrix.BREW }}" ]]; then
-            brew install open-mpi mpi4py
-          else
-            sudo apt install openmpi-dev mpi4py
+            sudo apt install libopenmpi-dev mpi4py
+            echo "PRTE_MCA_rmaps_default_mapping_policy=:oversubscribe" >> $GITHUB_ENV
+            echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
+            echo "OMPI_MCA_btl=^openib" >> $GITHUB_ENV
           fi
 
-          echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
+      - name: Install MacOS 13 specific dependencies
+        if: matrix.OS == 'macos-13' || matrix.OS == 'macos-latest'
+        run: |
+          if [[ "${{ matrix.BREW }}" ]]; then
+            brew install swig meson
+            if [[ "${{ matrix.OS }}" == "macos-latest" ]]; then
+              ln -s /opt/homebrew/bin/gfortran-13 /opt/homebrew/bin/gfortran
+            fi
+            echo brew install gcc@13
+            echo brew link --force --overwrite gcc@13
+          fi
+
+          if [[ "${{ matrix.XCODE }}" ]]; then
+            sudo xcode-select -s "/Applications/Xcode_${{ matrix.XCODE }}.app"
+          fi
+
+          if [[ "${{ matrix.MPI }}" ]]; then
+            brew install open-mpi mpi4py
+            echo "PRTE_MCA_rmaps_default_mapping_policy=:oversubscribe" >> $GITHUB_ENV
+            echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
+            echo "OMPI_MCA_btl=^openib" >> $GITHUB_ENV
+          fi
 
       - name: Build pyOptSparse
         run: |
           echo "============================================================="
           echo "Build pyoptsparse"
           echo "============================================================="
-
-          sudo apt install libblas-dev liblapack-dev
 
           if [[ "${{ matrix.PYOPTSPARSE }}" == "default" ]]; then
             BRANCH=""
