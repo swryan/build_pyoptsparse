@@ -228,12 +228,13 @@ jobs:
         if: matrix.OS == 'ubuntu-latest'
         run: |
           sudo apt install libblas-dev liblapack-dev
-          if [[ "${{ matrix.BREW }}" ]]; then
+          if [[ "${{ matrix.MPI }}" ]]; then
             sudo apt install libopenmpi-dev mpi4py
             echo "PRTE_MCA_rmaps_default_mapping_policy=:oversubscribe" >> $GITHUB_ENV
             echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
             echo "OMPI_MCA_btl=^openib" >> $GITHUB_ENV
           fi
+          sudo apt autoremove -y
 
       - name: Install MacOS 13 specific dependencies
         if: matrix.OS == 'macos-13' || matrix.OS == 'macos-latest'
