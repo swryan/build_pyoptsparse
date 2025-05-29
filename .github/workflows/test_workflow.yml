@@ -209,7 +209,7 @@ jobs:
         run: |
           conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q -y
 
-          conda install cython swig compilers cmake meson liblapack -q -y
+          conda install cython swig compilers cmake meson liblapack openblas -q -y
 
           if [[ "${{ matrix.XCODE }}" ]]; then
             sudo xcode-select -s "/Applications/Xcode_${{ matrix.XCODE }}.app"
