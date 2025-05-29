@@ -119,16 +119,6 @@ jobs:
             # PAROPT: true
             SNOPT: 7.7
 
-          # test oldest supported version of pyoptsparse
-          - NAME: Ubuntu Oldest
-            OS: ubuntu-latest
-            PY: 3.8
-            NUMPY: 1.22
-            SCIPY: 1.7
-            PYOPTSPARSE: 'v2.9.0'
-            NO_IPOPT: true
-            SNOPT: 7.2
-
           # test default pyoptsparse on Ubuntu without MPI with forced build, NumPy 1.x
           - NAME: Ubuntu Default, no MPI, forced build
             OS: ubuntu-latest
@@ -207,7 +197,7 @@ jobs:
 
       - name: Install
         run: |
-          uv pip install numpy scipy pkg_resources
+          uv pip install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }}
 
           echo "============================================================="
           echo "Install build_pyoptsparse"
@@ -342,6 +332,8 @@ jobs:
       #    1. Click on the web-browser link printed out in this action from the github
       #       workflow terminal
       #    2. Press cntrl + c in the new tab that opens up to reveal the terminal
+      #    3. The virtual environment can be "activated" to make its packages available:
+      #       $ source .venv/bin/activate
       - name: Setup tmate session
         if: github.event_name == 'workflow_dispatch' && inputs.debug_enabled && inputs.job_name == matrix.NAME
         uses: mxschmitt/action-tmate@v3
@@ -353,6 +345,23 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
+
+      - name: Display environment after
+        run: |
+          conda info
+          conda list
+
+          echo "============================================================="
+          echo "Check installed versions of Python, Numpy and Scipy"
+          echo "============================================================="
+          python -c "import sys; assert str(sys.version).startswith(str(${{ matrix.PY }})), \
+                    f'Python version {sys.version} is not the requested version (${{ matrix.PY }})'"
+
+          python -c "import numpy; assert str(numpy.__version__).startswith(str(${{ matrix.NUMPY }})), \
+                    f'Numpy version {numpy.__version__} is not the requested version (${{ matrix.NUMPY }})'"
+
+          python -c "import scipy; assert str(scipy.__version__).startswith(str(${{ matrix.SCIPY }})), \
+                    f'Scipy version {scipy.__version__} is not the requested version (${{ matrix.SCIPY }})'"
 
       - name: Run tests
         run: |
