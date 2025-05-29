@@ -195,9 +195,9 @@ jobs:
           python-version: ${{ matrix.PY }}
           activate-environment: true
 
-      - name: Install
+      - name: Test
         run: |
-          uv pip install numpy===${{ matrix.NUMPY }} scipy===${{ matrix.SCIPY }}
+          uv pip install numpy==${{ matrix.NUMPY }} scipy==${{ matrix.SCIPY }}
 
           echo "============================================================="
           echo "Install build_pyoptsparse"
@@ -215,7 +215,7 @@ jobs:
             sudo apt autoremove -y
           fi
 
-          if [[ "${{ matrix.OS }}" == "macos-*" ]]; then
+          if [[ "${{ matrix.OS }}" == "macos-"* ]]; then
             if [[ "${{ matrix.BREW }}" ]]; then
               brew install swig meson
               if [[ "${{ matrix.OS }}" == "macos-latest" ]]; then
