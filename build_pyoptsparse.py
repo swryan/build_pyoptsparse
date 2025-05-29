@@ -1071,10 +1071,10 @@ def check_library(libname:str, raise_on_failure=True):
     conda_prefix = os.getenv('CONDA_PREFIX')
     if conda_prefix:
         result = run_cmd(cmd_list=[os.environ['CC'], '-o', 'hello_c', 'hello.c', f'-L{conda_prefix}/lib', f'-l{libname}'],
-                        raise_error=True)
+                        raise_error=False)
     else:
         result = run_cmd(cmd_list=[os.environ['CC'], '-o', 'hello_c', 'hello.c',  f'-l{libname}'],
-                        raise_error=True)
+                        raise_error=False)
 
     success = (result is not None and result.returncode == 0)
     if success is True:
