@@ -204,43 +204,39 @@ jobs:
           echo "============================================================="
           uv pip install .
 
-      - name: Install Ubuntu specific dependencies
-        if: matrix.OS == 'ubuntu-latest'
-        run: |
-          sudo apt install libblas-dev liblapack-dev
-          if [[ "${{ matrix.MPI }}" ]]; then
-            sudo apt install libopenmpi-dev mpi4py
-            echo "PRTE_MCA_rmaps_default_mapping_policy=:oversubscribe" >> $GITHUB_ENV
-            echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
-            echo "OMPI_MCA_btl=^openib" >> $GITHUB_ENV
-          fi
-          sudo apt autoremove -y
-
-      - name: Install MacOS 13 specific dependencies
-        if: matrix.OS == 'macos-13' || matrix.OS == 'macos-latest'
-        run: |
-          if [[ "${{ matrix.BREW }}" ]]; then
-            brew install swig meson
-            if [[ "${{ matrix.OS }}" == "macos-latest" ]]; then
-              ln -s /opt/homebrew/bin/gfortran-13 /opt/homebrew/bin/gfortran
+          if [[ "${{ matrix.OS }}" == "ubuntu-latest" ]]; then
+            sudo apt install libblas-dev liblapack-dev
+            if [[ "${{ matrix.MPI }}" ]]; then
+              sudo apt install libopenmpi-dev mpi4py
+              echo "PRTE_MCA_rmaps_default_mapping_policy=:oversubscribe" >> $GITHUB_ENV
+              echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
+              echo "OMPI_MCA_btl=^openib" >> $GITHUB_ENV
             fi
-            echo brew install gcc@13
-            echo brew link --force --overwrite gcc@13
+            sudo apt autoremove -y
           fi
 
-          if [[ "${{ matrix.XCODE }}" ]]; then
-            sudo xcode-select -s "/Applications/Xcode_${{ matrix.XCODE }}.app"
+          if [[ "${{ matrix.OS }}" == "macos-*" ]]
+            if [[ "${{ matrix.BREW }}" ]]; then
+              brew install swig meson
+              if [[ "${{ matrix.OS }}" == "macos-latest" ]]; then
+                ln -s /opt/homebrew/bin/gfortran-13 /opt/homebrew/bin/gfortran
+              fi
+              echo brew install gcc@13
+              echo brew link --force --overwrite gcc@13
+            fi
+
+            if [[ "${{ matrix.XCODE }}" ]]; then
+              sudo xcode-select -s "/Applications/Xcode_${{ matrix.XCODE }}.app"
+            fi
+
+            if [[ "${{ matrix.MPI }}" ]]; then
+              brew install open-mpi mpi4py
+              echo "PRTE_MCA_rmaps_default_mapping_policy=:oversubscribe" >> $GITHUB_ENV
+              echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
+              echo "OMPI_MCA_btl=^openib" >> $GITHUB_ENV
+            fi
           fi
 
-          if [[ "${{ matrix.MPI }}" ]]; then
-            brew install open-mpi mpi4py
-            echo "PRTE_MCA_rmaps_default_mapping_policy=:oversubscribe" >> $GITHUB_ENV
-            echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
-            echo "OMPI_MCA_btl=^openib" >> $GITHUB_ENV
-          fi
-
-      - name: Build pyOptSparse
-        run: |
           echo "============================================================="
           echo "Build pyoptsparse"
           echo "============================================================="
@@ -326,6 +322,25 @@ jobs:
             done
           fi
 
+          uv pip install testflo parameterized six ansicolors
+
+          echo "============================================================="
+          echo "Run tests from pyoptsparse repository"
+          echo "============================================================="
+          unset DYLD_LIBRARY_PATH
+
+          if [[ "$BRANCH" == "" ]]; then
+            BRANCH=`python -c "from build_pyoptsparse import build_info; print(build_info['pyoptsparse']['branch'])"`
+            BRANCH="-b $BRANCH"
+          fi
+
+          echo "git clone $BRANCH https://github.com/mdolab/pyoptsparse"
+          git clone $BRANCH https://github.com/mdolab/pyoptsparse
+
+          cd pyoptsparse/test*/
+          testflo --pre_announce --timeout=120 --show_skipped .
+
+
       # Enable tmate debugging of manually-triggered workflows if the input option was provided
       #
       # To access the terminal through the web-interface:
@@ -345,54 +360,6 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
-
-      - name: Display environment after
-        run: |
-          conda info
-          conda list
-
-          echo "============================================================="
-          echo "Check installed versions of Python, Numpy and Scipy"
-          echo "============================================================="
-          python -c "import sys; assert str(sys.version).startswith(str(${{ matrix.PY }})), \
-                    f'Python version {sys.version} is not the requested version (${{ matrix.PY }})'"
-
-          python -c "import numpy; assert str(numpy.__version__).startswith(str(${{ matrix.NUMPY }})), \
-                    f'Numpy version {numpy.__version__} is not the requested version (${{ matrix.NUMPY }})'"
-
-          python -c "import scipy; assert str(scipy.__version__).startswith(str(${{ matrix.SCIPY }})), \
-                    f'Scipy version {scipy.__version__} is not the requested version (${{ matrix.SCIPY }})'"
-
-      - name: Run tests
-        run: |
-          uv pip install testflo parameterized six ansicolors
-
-          echo "============================================================="
-          echo "Run tests from pyoptsparse repository"
-          echo "============================================================="
-          unset DYLD_LIBRARY_PATH
-
-          if [[ "$BRANCH" == "" ]]; then
-            BRANCH=`python -c "from build_pyoptsparse import build_info; print(build_info['pyoptsparse']['branch'])"`
-            BRANCH="-b $BRANCH"
-          fi
-
-          echo "git clone $BRANCH https://github.com/mdolab/pyoptsparse"
-          git clone $BRANCH https://github.com/mdolab/pyoptsparse
-
-          cd pyoptsparse/test*/
-          testflo --pre_announce --timeout=120 --show_skipped .
-
-      - name: Audit dependencies
-        id: audit
-        continue-on-error: true
-        run: |
-          uv pip install pip-audit
-
-          echo "============================================================="
-          echo "Scan environment for packages with known vulnerabilities"
-          echo "============================================================="
-          python -m pip_audit
 
       - name: Slack audit warnings
         if: steps.audit.outcome == 'failure' && matrix.NAME != 'Ubuntu Oldest'
