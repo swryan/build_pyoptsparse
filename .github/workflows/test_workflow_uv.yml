@@ -27,8 +27,9 @@ on:
           - 'Ubuntu Default'
           - 'Ubuntu Default, no MPI'
           - 'Ubuntu Default, Numpy 2.x'
-          - 'MacOS Default'
-          - 'MacOS Default, Numpy 2.x'
+          - 'MacOS Default (Intel)'
+          - 'MacOS Default (Intel), Numpy 2.x'
+          - 'MacOS Default (ARM), NumPy 2.x'
           - 'Ubuntu Latest'
           - 'Ubuntu Oldest'
           - 'Ubuntu Default, no MPI, forced build'
@@ -54,7 +55,8 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          # test default version on Ubuntu
+
+          # test default pyoptsparse on Ubuntu, Numpy 1.x
           - NAME: Ubuntu Default
             OS: ubuntu-latest
             PY: '3.12'
@@ -65,7 +67,7 @@ jobs:
             # PAROPT: true
             SNOPT: 7.7
 
-          # test default version on Ubuntu without MPI
+          # test default pyoptsparse on Ubuntu, NumPy 1.x, no MPI
           - NAME: Ubuntu Default, no MPI
             OS: ubuntu-latest
             PY: '3.12'
@@ -74,19 +76,19 @@ jobs:
             PYOPTSPARSE: 'default'
             SNOPT: 7.7
 
-          # test default version on Ubuntu with NumPy 2.x
+          # test default pyoptsparse on Ubuntu, Numpy 2.x
           - NAME: Ubuntu Default, Numpy 2.x
             OS: ubuntu-latest
             PY: '3.13'
-            NUMPY: '2'
+            NUMPY: '2.2'
             SCIPY: '1.15'
             MPI: true
             PYOPTSPARSE: 'default'
             # PAROPT: true
             SNOPT: 7.7
 
-          # test default version on MacOS
-          - NAME: MacOS Default
+          # test default pyoptsparse on MacOS Legacy (Intel), NumPy 1.x
+          - NAME: MacOS Default (Intel)
             OS: macos-13
             PY: '3.11'
             NUMPY: '1.26'
@@ -96,19 +98,19 @@ jobs:
             # PAROPT: true
             SNOPT: 7.7
 
-          # test default version on MacOS with NumPy 2.x
-          - NAME: MacOS Default, Numpy 2.x
+          # test default pyoptsparse on MacOS Legacy (Intel), NumPy 2.x
+          - NAME: MacOS Default (Intel), Numpy 2.x
             OS: macos-13
             PY: '3.13'
-            NUMPY: '2'
+            NUMPY: '2.2'
             SCIPY: '1.15'
             MPI: true
             PYOPTSPARSE: 'default'
             # PAROPT: true
             SNOPT: 7.7
 
-          # test default version on MacOS latest (ARM64)
-          - NAME: MacOS Default on ARM
+          # test default pyoptsparse on MacOS latest (ARM), NumPy 2.x
+          - NAME: MacOS Default (ARM), NumPy 2.x
             OS: macos-latest
             PY: '3.12'
             NUMPY: '1.26'
@@ -118,18 +120,18 @@ jobs:
             PYOPTSPARSE: 'default'
             SNOPT: 7.7
 
-          # test latest release versions
+          # test latest release of pyoptsparse, NumPy 2.x
           - NAME: Ubuntu Latest
             OS: ubuntu-latest
-            PY: 3
-            NUMPY: 2
-            SCIPY: 1
+            PY: 3.13
+            NUMPY: 2.2
+            SCIPY: 1.15
             MPI: true
             PYOPTSPARSE: 'latest'
             # PAROPT: true
             SNOPT: 7.7
 
-          # test oldest supported versions
+          # test oldest supported version of pyoptsparse
           - NAME: Ubuntu Oldest
             OS: ubuntu-latest
             PY: 3.8
@@ -139,7 +141,7 @@ jobs:
             NO_IPOPT: true
             SNOPT: 7.2
 
-          # test default version on Ubuntu without MPI with forced build
+          # test default pyoptsparse on Ubuntu without MPI with forced build, NumPy 1.x
           - NAME: Ubuntu Default, no MPI, forced build
             OS: ubuntu-latest
             PY: '3.12'
@@ -149,7 +151,7 @@ jobs:
             SNOPT: 7.7
             FORCE_BUILD: true
 
-          # test default version on MacOS without MPI with forced build
+          # test default pyoptsparse on MacOS without MPI with forced build
           - NAME: MacOS Default, no MPI, forced build
             OS: macos-13
             PY: '3.11'
@@ -160,12 +162,12 @@ jobs:
             FORCE_BUILD: true
             XCODE: '14.2'
 
-          # test latest version without MPI with forced build
+          # test latest pyoptsparse without MPI with forced build
           - NAME: Ubuntu Latest, no MPI, forced build
             OS: ubuntu-latest
-            PY: 3
-            NUMPY: 2
-            SCIPY: 1
+            PY: 3.13
+            NUMPY: 2.2
+            SCIPY: 1.15
             PYOPTSPARSE: 'latest'
             SNOPT: 7.7
             FORCE_BUILD: true
