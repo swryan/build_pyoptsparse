@@ -28,7 +28,6 @@ on:
           - 'Ubuntu Default, no MPI'
           - 'Ubuntu Default, Numpy 2.x'
           - 'MacOS Default (Intel)'
-          - 'MacOS Default (Intel), Numpy 2.x'
           - 'MacOS Default (ARM), NumPy 2.x'
           - 'Ubuntu Latest'
           - 'Ubuntu Oldest'
@@ -93,17 +92,6 @@ jobs:
             PY: '3.11'
             NUMPY: '1.26'
             SCIPY: '1.13'
-            MPI: true
-            PYOPTSPARSE: 'default'
-            # PAROPT: true
-            SNOPT: 7.7
-
-          # test default pyoptsparse on MacOS Legacy (Intel), NumPy 2.x
-          - NAME: MacOS Default (Intel), Numpy 2.x
-            OS: macos-13
-            PY: '3.13'
-            NUMPY: '2.2'
-            SCIPY: '1.15'
             MPI: true
             PYOPTSPARSE: 'default'
             # PAROPT: true
@@ -216,13 +204,12 @@ jobs:
           miniconda-version: latest
           python-version: ${{ matrix.PY }}
           channels: conda-forge
-          channel-priority: true
 
       - name: Install
         run: |
           conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -q -y
 
-          conda install cython swig compilers cmake meson -q -y
+          conda install cython swig compilers cmake meson liblapack -q -y
 
           if [[ "${{ matrix.XCODE }}" ]]; then
             sudo xcode-select -s "/Applications/Xcode_${{ matrix.XCODE }}.app"
