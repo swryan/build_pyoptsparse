@@ -1068,12 +1068,13 @@ def check_library(libname:str, raise_on_failure=True):
     with open('hello.c', 'w', encoding="utf-8") as f:
         f.write('#include <stdio.h>\nint main() {\nprintf("cc works!\\n");\nreturn 0;\n}\n')
 
-    note(f'{os.getenv("CONDA_PREFIX")=}')
-    note(f'{os.getenv("LD_LIBRARY_PATH")=}')
-    libs = sorted(os.listdir(f'{os.getenv("CONDA_PREFIX")}/lib'))
-    note(f'{libs=}')
-    result = run_cmd(cmd_list=[os.environ['CC'], '-o', 'hello_c', 'hello.c', f'-L{os.getenv("CONDA_PREFIX")}/lib' f'-l{libname}'],
-                    raise_error=True)
+    conda_prefix = os.getenv('CONDA_PREFIX')
+    if conda_prefix:
+        result = run_cmd(cmd_list=[os.environ['CC'], '-o', 'hello_c', 'hello.c', f'-L{conda_prefix}/lib', f'-l{libname}'],
+                        raise_error=True)
+    else:
+        result = run_cmd(cmd_list=[os.environ['CC'], '-o', 'hello_c', 'hello.c',  f'-l{libname}'],
+                        raise_error=True)
 
     success = (result is not None and result.returncode == 0)
     if success is True:
