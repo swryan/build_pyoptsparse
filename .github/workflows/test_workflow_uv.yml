@@ -200,27 +200,17 @@ jobs:
           uv pip install numpy==${{ matrix.NUMPY }} scipy==${{ matrix.SCIPY }}
 
           echo "============================================================="
-          echo "Install build_pyoptsparse"
+          echo "Install system dependencies"
           echo "============================================================="
-          uv pip install .
-
-          if [[ "${{ matrix.OS }}" == "ubuntu-latest" ]]; then
+          if [[ "${{ matrix.OS }}" == "ubuntu-"* ]]; then
             sudo apt install libblas-dev liblapack-dev
             if [[ "${{ matrix.MPI }}" ]]; then
-              sudo apt install libopenmpi-dev mpi4py
-              echo "PRTE_MCA_rmaps_default_mapping_policy=:oversubscribe" >> $GITHUB_ENV
-              echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
-              echo "OMPI_MCA_btl=^openib" >> $GITHUB_ENV
+              sudo apt install openmpi-mpicc mpi4py
             fi
             sudo apt autoremove -y
-          fi
-
-          if [[ "${{ matrix.OS }}" == "macos-"* ]]; then
-            if [[ "${{ matrix.BREW }}" ]]; then
+          elif [[ "${{ matrix.OS }}" == "macos-"* ]]; then
               brew install swig meson
-              if [[ "${{ matrix.OS }}" == "macos-latest" ]]; then
-                ln -s /opt/homebrew/bin/gfortran-13 /opt/homebrew/bin/gfortran
-              fi
+              ln -s /opt/homebrew/bin/gfortran-13 /opt/homebrew/bin/gfortran
               echo brew install gcc@13
               echo brew link --force --overwrite gcc@13
             fi
@@ -231,16 +221,23 @@ jobs:
 
             if [[ "${{ matrix.MPI }}" ]]; then
               brew install open-mpi mpi4py
-              echo "PRTE_MCA_rmaps_default_mapping_policy=:oversubscribe" >> $GITHUB_ENV
-              echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
-              echo "OMPI_MCA_btl=^openib" >> $GITHUB_ENV
             fi
           fi
+
+          if [[ "${{ matrix.MPI }}" ]]; then
+            echo "PRTE_MCA_rmaps_default_mapping_policy=:oversubscribe" >> $GITHUB_ENV
+            echo "OMPI_MCA_rmaps_base_oversubscribe=1" >> $GITHUB_ENV
+            echo "OMPI_MCA_btl=^openib" >> $GITHUB_ENV
+          fi
+
+          echo "============================================================="
+          echo "Install build_pyoptsparse"
+          echo "============================================================="
+          uv pip install .
 
           echo "============================================================="
           echo "Build pyoptsparse"
           echo "============================================================="
-
           if [[ "${{ matrix.PYOPTSPARSE }}" == "default" ]]; then
             BRANCH=""
           elif [[ "${{ matrix.PYOPTSPARSE }}" == "latest" ]]; then
@@ -298,6 +295,24 @@ jobs:
 
           echo "BRANCH=${BRANCH}" >> $GITHUB_ENV
 
+          echo "============================================================="
+          echo "Run tests from pyoptsparse repository"
+          echo "============================================================="
+          uv pip install testflo parameterized six ansicolors
+
+          unset DYLD_LIBRARY_PATH
+
+          if [[ "$BRANCH" == "" ]]; then
+            BRANCH=`python -c "from build_pyoptsparse import build_info; print(build_info['pyoptsparse']['branch'])"`
+            BRANCH="-b $BRANCH"
+          fi
+
+          echo "git clone $BRANCH https://github.com/mdolab/pyoptsparse"
+          git clone $BRANCH https://github.com/mdolab/pyoptsparse
+
+          cd pyoptsparse/test*/
+          testflo --pre_announce --timeout=120 --show_skipped .
+
       - name: Display build log
         if: failure()
         run: |
@@ -321,25 +336,6 @@ jobs:
               cat $f
             done
           fi
-
-          uv pip install testflo parameterized six ansicolors
-
-          echo "============================================================="
-          echo "Run tests from pyoptsparse repository"
-          echo "============================================================="
-          unset DYLD_LIBRARY_PATH
-
-          if [[ "$BRANCH" == "" ]]; then
-            BRANCH=`python -c "from build_pyoptsparse import build_info; print(build_info['pyoptsparse']['branch'])"`
-            BRANCH="-b $BRANCH"
-          fi
-
-          echo "git clone $BRANCH https://github.com/mdolab/pyoptsparse"
-          git clone $BRANCH https://github.com/mdolab/pyoptsparse
-
-          cd pyoptsparse/test*/
-          testflo --pre_announce --timeout=120 --show_skipped .
-
 
       # Enable tmate debugging of manually-triggered workflows if the input option was provided
       #
