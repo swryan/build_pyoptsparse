@@ -51,7 +51,7 @@ jobs:
     timeout-minutes: 30
 
     strategy:
-      fail-fast: false
+      fail-fast: true
 
       matrix:
         include:
@@ -325,10 +325,11 @@ jobs:
 
           echo "git clone https://github.com/mdolab/pyoptsparse"
           git clone https://github.com/mdolab/pyoptsparse
+          cd pyoptsparse
           echo "git checkout $BRANCH"
           git checkout $BRANCH
 
-          cd pyoptsparse/test*/
+          cd test*/
           uv run python -m testflo --pre_announce --timeout=120 --show_skipped .
 
       - name: Display build log
