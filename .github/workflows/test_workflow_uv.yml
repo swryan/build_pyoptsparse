@@ -317,7 +317,7 @@ jobs:
           uv pip install testflo parameterized six ansicolors setuptools
 
           if [[ "$BRANCH" = "" ]]; then
-            BRANCH=`uv run python -c "from build_pyoptsparse import build_info; print(build_info['pyoptsparse']['branch'])"`
+            BRANCH=`uv run --with numpy==${{ matrix.NUMPY }} python -c "from build_pyoptsparse import build_info; print(build_info['pyoptsparse']['branch'])"`
             BRANCH="-b $BRANCH"
           fi
 
