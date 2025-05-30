@@ -325,7 +325,7 @@ jobs:
 
           echo "git clone https://github.com/mdolab/pyoptsparse"
           git clone https://github.com/mdolab/pyoptsparse
-          echo "git checkout $BRANCH""
+          echo "git checkout $BRANCH"
           git checkout $BRANCH
 
           cd pyoptsparse/test*/
