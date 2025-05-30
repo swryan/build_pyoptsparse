@@ -321,6 +321,8 @@ jobs:
             BRANCH="-b $BRANCH"
           fi
 
+          cd $HOME
+
           echo "git clone $BRANCH https://github.com/mdolab/pyoptsparse"
           git clone $BRANCH https://github.com/mdolab/pyoptsparse
 
