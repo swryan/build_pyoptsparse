@@ -52,6 +52,7 @@ jobs:
 
     strategy:
       fail-fast: true
+
       matrix:
         include:
 
@@ -195,24 +196,24 @@ jobs:
           python-version: ${{ matrix.PY }}
           activate-environment: true
 
-      - name: Test
+      - name: Install dependencies
         run: |
           uv pip install numpy==${{ matrix.NUMPY }} scipy==${{ matrix.SCIPY }}
 
           echo "============================================================="
           echo "Install system dependencies"
           echo "============================================================="
-          if [[ "${{ matrix.OS }}" == "ubuntu-"* ]]; then
+          if [[ "${{ matrix.OS }}" == "ubuntu-latest" ]]; then
             sudo apt install libblas-dev liblapack-dev
             if [[ "${{ matrix.MPI }}" ]]; then
               sudo apt install openmpi-mpicc mpi4py
             fi
             sudo apt autoremove -y
-          elif [[ "${{ matrix.OS }}" == "macos-"* ]]; then
-            brew install swig meson
-            brew install gcc@13
-            brew link --force --overwrite gcc@13
-            ln -s /opt/homebrew/bin/gfortran-13 /opt/homebrew/bin/gfortran
+          else
+            brew install gfortran swig meson
+            echo brew install gcc@13
+            echo brew link --force --overwrite gcc@13
+            echo ln -s /opt/homebrew/bin/gfortran-13 /opt/homebrew/bin/gfortran
 
             if [[ "${{ matrix.XCODE }}" ]]; then
               sudo xcode-select -s "/Applications/Xcode_${{ matrix.XCODE }}.app"
@@ -229,11 +230,15 @@ jobs:
             echo "OMPI_MCA_btl=^openib" >> $GITHUB_ENV
           fi
 
+      - name: Install build_pyoptsparse
+        run: |
           echo "============================================================="
           echo "Install build_pyoptsparse"
           echo "============================================================="
           uv pip install .
 
+      - name: Build pyoptsparse
+        run: |
           echo "============================================================="
           echo "Build pyoptsparse"
           echo "============================================================="
@@ -294,6 +299,8 @@ jobs:
 
           echo "BRANCH=${BRANCH}" >> $GITHUB_ENV
 
+      - name: Run tests from pyoptsparse repository
+        run: |
           echo "============================================================="
           echo "Run tests from pyoptsparse repository"
           echo "============================================================="
@@ -301,7 +308,7 @@ jobs:
 
           unset DYLD_LIBRARY_PATH
 
-          if [[ "$BRANCH" == "" ]]; then
+          if [[ "$BRANCH" = "" ]]; then
             BRANCH=`python -c "from build_pyoptsparse import build_info; print(build_info['pyoptsparse']['branch'])"`
             BRANCH="-b $BRANCH"
           fi
