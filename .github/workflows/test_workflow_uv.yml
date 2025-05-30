@@ -314,8 +314,6 @@ jobs:
           echo "============================================================="
           uv pip install testflo parameterized six ansicolors setuptools
 
-          unset DYLD_LIBRARY_PATH
-
           if [[ "$BRANCH" = "" ]]; then
             BRANCH=`python -c "from build_pyoptsparse import build_info; print(build_info['pyoptsparse']['branch'])"`
             BRANCH="-b $BRANCH"
