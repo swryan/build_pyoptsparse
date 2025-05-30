@@ -329,7 +329,7 @@ jobs:
           git checkout $BRANCH
 
           cd pyoptsparse/test*/
-          uv run testflo --pre_announce --timeout=120 --show_skipped .
+          testflo --pre_announce --timeout=120 --show_skipped .
 
       - name: Display build log
         if: failure()
