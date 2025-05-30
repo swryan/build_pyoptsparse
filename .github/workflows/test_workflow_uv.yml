@@ -325,13 +325,9 @@ jobs:
 
           echo "git clone https://github.com/mdolab/pyoptsparse"
           git clone https://github.com/mdolab/pyoptsparse
-          cd pyoptsparse
-          pwd
-          cat pyproject.toml
+          cd pyoptsparse/test*/
           echo "git checkout $BRANCH"
           git checkout $BRANCH
-
-          cd test*/
           uv run python -m testflo --pre_announce --timeout=120 --show_skipped .
 
       - name: Display build log
