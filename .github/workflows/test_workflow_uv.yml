@@ -325,7 +325,7 @@ jobs:
           git clone $BRANCH https://github.com/mdolab/pyoptsparse
 
           cd pyoptsparse/test*/
-          testflo --pre_announce --timeout=120 --show_skipped .
+          uv run testflo --pre_announce --timeout=120 --show_skipped .
 
       - name: Display build log
         if: failure()
