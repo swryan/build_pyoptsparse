@@ -209,11 +209,10 @@ jobs:
             fi
             sudo apt autoremove -y
           elif [[ "${{ matrix.OS }}" == "macos-"* ]]; then
-              brew install swig meson
-              ln -s /opt/homebrew/bin/gfortran-13 /opt/homebrew/bin/gfortran
-              echo brew install gcc@13
-              echo brew link --force --overwrite gcc@13
-            fi
+            brew install swig meson
+            ln -s /opt/homebrew/bin/gfortran-13 /opt/homebrew/bin/gfortran
+            echo brew install gcc@13
+            echo brew link --force --overwrite gcc@13
 
             if [[ "${{ matrix.XCODE }}" ]]; then
               sudo xcode-select -s "/Applications/Xcode_${{ matrix.XCODE }}.app"
