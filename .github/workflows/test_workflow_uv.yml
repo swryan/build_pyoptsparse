@@ -323,8 +323,10 @@ jobs:
 
           cd $HOME
 
-          echo "git clone $BRANCH https://github.com/mdolab/pyoptsparse"
-          git clone $BRANCH https://github.com/mdolab/pyoptsparse
+          echo "git clone https://github.com/mdolab/pyoptsparse"
+          git clone https://github.com/mdolab/pyoptsparse
+          echo "git checkout $BRANCH""
+          git checkout $BRANCH
 
           cd pyoptsparse/test*/
           uv run testflo --pre_announce --timeout=120 --show_skipped .
