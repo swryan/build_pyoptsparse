@@ -240,7 +240,6 @@ jobs:
       - name: Display environment before
         run: |
           python --version
-          uv run python -c "import sys; print(sys.version)"
           uv pip list
 
       - name: Build pyoptsparse
@@ -308,7 +307,6 @@ jobs:
       - name: Display environment after
         run: |
           python --version
-          uv run python -c "import sys; print(sys.version)"
           uv pip list
 
       - name: Run tests from pyoptsparse repository
