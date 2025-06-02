@@ -84,7 +84,7 @@ jobs:
             SCIPY: '1.15'
             MPI: true
             PYOPTSPARSE: 'default'
-            # PAROPT: true
+            PAROPT: true
             SNOPT: 7.7
 
           # test default pyoptsparse on MacOS Legacy (Intel), NumPy 1.x
@@ -95,7 +95,7 @@ jobs:
             SCIPY: '1.13'
             MPI: true
             PYOPTSPARSE: 'default'
-            # PAROPT: true
+            PAROPT: true
             SNOPT: 7.7
 
           # test default pyoptsparse on MacOS latest (ARM), NumPy 2.x
@@ -117,7 +117,7 @@ jobs:
             SCIPY: 1.15
             MPI: true
             PYOPTSPARSE: 'latest'
-            # PAROPT: true
+            PAROPT: true
             SNOPT: 7.7
 
           # test default pyoptsparse on Ubuntu without MPI with forced build, NumPy 1.x
