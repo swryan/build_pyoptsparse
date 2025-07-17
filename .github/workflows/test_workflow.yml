@@ -284,7 +284,7 @@ jobs:
           python -c "import numpy; assert str(numpy.__version__).startswith(str(${{ matrix.NUMPY }})), \
                     f'Numpy version {numpy.__version__} is not the requested version (${{ matrix.NUMPY }})'"
 
-          if [[ "${{ matrix.SCIPY}} ]]; then
+          if [[ "${{ matrix.SCIPY}}" ]]; then
             python -c "import scipy; assert str(scipy.__version__).startswith(str(${{ matrix.SCIPY }})), \
                       f'Scipy version {scipy.__version__} is not the requested version (${{ matrix.SCIPY }})'"
           fi
