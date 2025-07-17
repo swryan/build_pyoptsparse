@@ -234,12 +234,12 @@ jobs:
           if [[ "${{ matrix.NUMPY}}" ]]; then
             if [[ "${{ matrix.SCIPY_FROM_PYPI }}" ]]; then
               echo "============================================================="
-              echo "Install SciPy from PyPI"
+              echo "Install NumPy from PyPI"
               echo "============================================================="
               python -m pip install numpy==${{ matrix.NUMPY }}
             else
               echo "============================================================="
-              echo "Install SciPy from conda-forge"
+              echo "Install NumPy from conda-forge"
               echo "============================================================="
               conda install numpy=${{ matrix.NUMPY }} -c conda-forge -q -y
             fi
