@@ -231,19 +231,17 @@ jobs:
 
       - name: Install
         run: |
-          conda install numpy=${{ matrix.NUMPY }} -q -y
-
           if [[ "${{ matrix.SCIPY}}" ]]; then
             if [[ "${{ matrix.SCIPY_FROM_PYPI }}" ]]; then
               echo "============================================================="
               echo "Install SciPy from PyPI"
               echo "============================================================="
-              python -m pip install scipy==${{ matrix.SCIPY }}
+              python -m pip install numpy==${{ matrix.NUMPY }} scipy==${{ matrix.SCIPY }}
             else
               echo "============================================================="
               echo "Install SciPy from conda-forge"
               echo "============================================================="
-              conda install scipy=${{ matrix.SCIPY }} -c conda-forge -q -y
+              conda install numpy=${{ matrix.NUMPY }} scipy=${{ matrix.SCIPY }} -c conda-forge -q -y
             fi
           fi
 
