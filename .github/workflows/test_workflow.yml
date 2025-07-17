@@ -245,6 +245,7 @@ jobs:
               echo "============================================================="
               conda install scipy=${{ matrix.SCIPY }} -c conda-forge -q -y
             fi
+          fi
 
           conda install cython swig compilers cmake meson liblapack openblas -q -y
 
