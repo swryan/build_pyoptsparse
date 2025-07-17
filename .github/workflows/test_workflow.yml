@@ -234,7 +234,7 @@ jobs:
           conda install numpy=${{ matrix.NUMPY }} -q -y
 
           if [[ "${{ matrix.SCIPY}} ]]; then
-            if [[ "${{ matrix.Scipy_FROM_PYPI }}" ]]; then
+            if [[ "${{ matrix.SCIPY_FROM_PYPI }}" ]]; then
               echo "============================================================="
               echo "Install SciPy from PyPI"
               echo "============================================================="
