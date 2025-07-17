@@ -1341,6 +1341,10 @@ def perform_install():
 
     announce('Beginning installation')
 
+    # preinstall scipy with conda if not already installed
+    if opts['ignore_conda'] is False and conda_is_active():
+        install_conda_pkg('scipy')
+
     if opts['linear_solver'] == 'mumps':
         install_with_mumps()
         install_pyoptsparse_from_src()
