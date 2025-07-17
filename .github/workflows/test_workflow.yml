@@ -121,7 +121,7 @@ jobs:
             SNOPT: 7.7
 
           # test default release of pyoptsparse, NumPy 2.x, no scipy
-          - NAME: Ubuntu Latest, no SciPy
+          - NAME: Ubuntu Default, no SciPy
             OS: ubuntu-latest
             PY: 3.13
             NUMPY: 2.2
@@ -131,11 +131,11 @@ jobs:
             SNOPT: 7.7
 
           # test default release of pyoptsparse, NumPy 2.x, scipy from pypi
-          - NAME: MacOS Latest, SciPy from PyPI
+          - NAME: MacOS Default, SciPy from PyPI
             OS: macos-latest
-            PY: 3.12
-            NUMPY: 2.2
-            SCIPY: 1.15
+            PY: '3.12'
+            NUMPY: '1.26'
+            SCIPY: '1.13'
             SCIPY_FROM_PYPI: true
             MPI: true
             PYOPTSPARSE: 'default'
