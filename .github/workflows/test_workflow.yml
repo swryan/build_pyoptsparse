@@ -120,25 +120,25 @@ jobs:
             # PAROPT: true
             SNOPT: 7.7
 
-          # test latest release of pyoptsparse, NumPy 2.x, no scipy
+          # test default release of pyoptsparse, NumPy 2.x, no scipy
           - NAME: Ubuntu Latest, no SciPy
             OS: ubuntu-latest
             PY: 3.13
             NUMPY: 2.2
             MPI: true
-            PYOPTSPARSE: 'latest'
+            PYOPTSPARSE: 'default'
             # PAROPT: true
             SNOPT: 7.7
 
-          # test latest release of pyoptsparse, NumPy 2.x, scipy from pypi
+          # test default release of pyoptsparse, NumPy 2.x, scipy from pypi
           - NAME: MacOS Latest, SciPy from PyPI
             OS: macos-latest
-            PY: 3.13
+            PY: 3.12
             NUMPY: 2.2
             SCIPY: 1.15
             SCIPY_FROM_PYPI: true
             MPI: true
-            PYOPTSPARSE: 'latest'
+            PYOPTSPARSE: 'default'
             # PAROPT: true
             SNOPT: 7.7
 
