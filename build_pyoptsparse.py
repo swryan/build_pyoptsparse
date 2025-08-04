@@ -806,7 +806,9 @@ def install_ipopt(config_opts:list=None):
             try_fallback('IPOPT', e)
 
     install_ipopt_from_src(config_opts=config_opts)
+
     if opts['pyoptsparse_version'] >= parse('2.14'):
+        run_cmd(['pkg-config', '--libs', '--cflags', 'ipopt'])
         pip_install(['cyipopt', '--use-pep517'], pkg_desc='cyipopt')
 
 def install_mumps():
